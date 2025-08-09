@@ -1,5 +1,5 @@
-import { IntegrationCard } from "@/components/IntegrationCard";
-import { integrations } from "@/data/integrations";
+import { IntegrationCard } from '@/components/IntegrationCard';
+import { integrations } from '@/data/integrations';
 
 const Integrations = () => {
   return (

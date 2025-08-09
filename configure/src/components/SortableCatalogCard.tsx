@@ -1,12 +1,12 @@
-import { useSortable } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
-import { GripVertical } from "lucide-react";
-import { Card, CardHeader } from "@/components/ui/card";
-import { Switch } from "@/components/ui/switch";
-import { Badge } from "@/components/ui/badge";
-import { type Catalog } from "@/data/catalogs";
-import { streamingServices } from "@/data/streamings";
-import { integrations } from "@/data/integrations";
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import { GripVertical } from 'lucide-react';
+import { Card, CardHeader } from '@/components/ui/card';
+import { Switch } from '@/components/ui/switch';
+import { Badge } from '@/components/ui/badge';
+import { type Catalog } from '@/data/catalogs';
+import { streamingServices } from '@/data/streamings';
+import { integrations } from '@/data/integrations';
 
 interface SortableCatalogCardProps {
   catalog: Catalog;
@@ -17,15 +17,15 @@ interface SortableCatalogCardProps {
 }
 
 const getIntegrationInfo = (catalogId: string) => {
-  const [integrationId] = catalogId.split(".");
+  const [integrationId] = catalogId.split('.');
   const integration = integrations.find((i) => i.id === integrationId);
 
   return (
     integration || {
       id: integrationId,
       name: integrationId.toUpperCase(),
-      icon: "/default.svg",
-      description: "Unknown integration",
+      icon: '/default.svg',
+      description: 'Unknown integration',
     }
   );
 };
@@ -55,8 +55,8 @@ export function SortableCatalogCard({
   const showInHome = config?.showInHome || false;
   let integration = getIntegrationInfo(catalog.id);
 
-  if (integration.id === "streaming") {
-    const streamindId = catalog.id.split(".")[1];
+  if (integration.id === 'streaming') {
+    const streamindId = catalog.id.split('.')[1];
     const foundService = streamingServices.find((s) => s.id === streamindId);
     integration = {
       ...integration,
@@ -87,7 +87,7 @@ export function SortableCatalogCard({
               <h1 className="font-semibold flex items-center gap-2">
                 {catalog.name}
                 <Badge variant="outline">
-                  {catalog.type === "movie" ? "Movie" : "Series"}
+                  {catalog.type === 'movie' ? 'Movie' : 'Series'}
                 </Badge>
               </h1>
             </div>
@@ -100,7 +100,7 @@ export function SortableCatalogCard({
                 }
               />
               <span
-                className={`text-sm ${!isEnabled ? "text-muted-foreground/50" : "text-muted-foreground"}`}
+                className={`text-sm ${!isEnabled ? 'text-muted-foreground/50' : 'text-muted-foreground'}`}
               >
                 Home
               </span>

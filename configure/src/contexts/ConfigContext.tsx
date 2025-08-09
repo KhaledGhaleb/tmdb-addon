@@ -4,14 +4,14 @@ import React, {
   useContext,
   useEffect,
   useState,
-} from "react";
+} from 'react';
 import {
   ConfigContext,
   type ConfigContextType,
   type CatalogConfig,
-} from "./config";
-import { baseCatalogs, authCatalogs, streamingCatalogs } from "@/data/catalogs";
-import { decompressFromEncodedURIComponent } from "lz-string";
+} from './config';
+import { baseCatalogs, authCatalogs, streamingCatalogs } from '@/data/catalogs';
+import { decompressFromEncodedURIComponent } from 'lz-string';
 
 const allCatalogs = [
   ...baseCatalogs,
@@ -20,18 +20,18 @@ const allCatalogs = [
 ];
 
 export function ConfigProvider({ children }: { children: React.ReactNode }) {
-  const [rpdbkey, setRpdbkey] = useState("");
-  const [geminikey, setGeminiKey] = useState("");
-  const [mdblistkey, setMdblistkey] = useState("");
+  const [rpdbkey, setRpdbkey] = useState('');
+  const [geminikey, setGeminiKey] = useState('');
+  const [mdblistkey, setMdblistkey] = useState('');
   const [includeAdult, setIncludeAdult] = useState(false);
   const [provideImdbId, setProvideImdbId] = useState(false);
   const [tmdbPrefix, setTmdbPrefix] = useState(false);
   const [hideEpisodeThumbnails, setHideEpisodeThumbnails] = useState(false);
-  const [language, setLanguage] = useState("en-US");
-  const [sessionId, setSessionId] = useState("");
+  const [language, setLanguage] = useState('en-US');
+  const [sessionId, setSessionId] = useState('');
   const [streaming, setStreaming] = useState<string[]>([]);
   const [catalogs, setCatalogs] = useState<CatalogConfig[]>([]);
-  const [ageRating, setAgeRating] = useState<string | undefined>(undefined);
+  const [ageRating, setAgeRating] = useState<string | undefined>('PG-13');
   const [searchEnabled, setSearchEnabled] = useState<boolean>(true);
   const [hideInCinemaTag, setHideInCinemaTag] = useState(false);
   const [castCount, setCastCount] = useState<number | undefined>(5);
@@ -48,7 +48,7 @@ export function ConfigProvider({ children }: { children: React.ReactNode }) {
 
   const loadConfigFromUrl = useCallback(() => {
     try {
-      const path = window.location.pathname.split("/")[1];
+      const path = window.location.pathname.split('/')[1];
       const decompressedConfig = decompressFromEncodedURIComponent(path);
       const config = JSON.parse(decompressedConfig);
 
@@ -56,30 +56,30 @@ export function ConfigProvider({ children }: { children: React.ReactNode }) {
       if (config.mdblistkey) setMdblistkey(config.mdblistkey);
       if (config.geminikey) setGeminiKey(config.geminikey);
       if (config.provideImdbId)
-        setProvideImdbId(config.provideImdbId === "true");
-      if (config.tmdbPrefix) setTmdbPrefix(config.tmdbPrefix === "true");
+        setProvideImdbId(config.provideImdbId === 'true');
+      if (config.tmdbPrefix) setTmdbPrefix(config.tmdbPrefix === 'true');
       if (config.hideEpisodeThumbnails)
-        setHideEpisodeThumbnails(config.hideEpisodeThumbnails === "true");
+        setHideEpisodeThumbnails(config.hideEpisodeThumbnails === 'true');
       if (config.sessionId) setSessionId(config.sessionId);
       if (config.ageRating) setAgeRating(config.ageRating);
-      if (config.includeAdult) setIncludeAdult(config.includeAdult === "true");
+      if (config.includeAdult) setIncludeAdult(config.includeAdult === 'true');
       if (config.language) setLanguage(config.language);
       if (config.hideInCinemaTag)
         setHideInCinemaTag(
-          config.hideInCinemaTag === "true" || config.hideInCinemaTag === true,
+          config.hideInCinemaTag === 'true' || config.hideInCinemaTag === true
         );
       if (config.castCount !== undefined)
         setCastCount(
-          config.castCount === "Unlimited"
+          config.castCount === 'Unlimited'
             ? undefined
-            : Number(config.castCount),
+            : Number(config.castCount)
         );
       if (config.numYears !== undefined) setNumYears(Number(config.castCount));
 
       if (config.catalogs) {
         const catalogsWithNames = config.catalogs.map((catalog) => {
           const existingCatalog = allCatalogs.find(
-            (c) => c.id === catalog.id && c.type === catalog.type,
+            (c) => c.id === catalog.id && c.type === catalog.type
           );
           return {
             ...catalog,
@@ -91,8 +91,8 @@ export function ConfigProvider({ children }: { children: React.ReactNode }) {
 
         const selectedStreamingServices = new Set(
           catalogsWithNames
-            .filter((catalog) => catalog.id.startsWith("streaming."))
-            .map((catalog) => catalog.id.split(".")[1]),
+            .filter((catalog) => catalog.id.startsWith('streaming.'))
+            .map((catalog) => catalog.id.split('.')[1])
         );
 
         setStreaming(Array.from(selectedStreamingServices) as string[]);
@@ -101,18 +101,18 @@ export function ConfigProvider({ children }: { children: React.ReactNode }) {
       }
 
       if (config.searchEnabled)
-        setSearchEnabled(config.searchEnabled === "true");
+        setSearchEnabled(config.searchEnabled === 'true');
 
-      window.history.replaceState({}, "", "/configure");
+      window.history.replaceState({}, '', '/configure');
     } catch (error) {
-      console.error("Error loading config from URL:", error);
+      console.error('Error loading config from URL:', error);
       loadDefaultCatalogs();
     }
   }, [loadDefaultCatalogs]); // include because it’s called here
 
   useEffect(() => {
     const path = window.location.pathname;
-    if (path.includes("configure")) {
+    if (path.includes('configure')) {
       loadConfigFromUrl();
     } else {
       loadDefaultCatalogs();

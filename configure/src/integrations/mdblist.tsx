@@ -1,19 +1,19 @@
-import { useState, useEffect, useCallback } from "react";
-import { useConfig } from "@/contexts/use-config";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { DialogClose } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
-import { toast } from "@/components/ui/use-toast";
+import { useState, useEffect, useCallback } from 'react';
+import { useConfig } from '@/contexts/use-config';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { DialogClose } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Loader2 } from 'lucide-react';
+import { toast } from '@/components/ui/use-toast';
 
 export default function MDBListIntegration() {
   const { mdblistkey, setMdblistkey, catalogs, setCatalogs } = useConfig();
-  const [tempKey, setTempKey] = useState(mdblistkey || "");
+  const [tempKey, setTempKey] = useState(mdblistkey || '');
   const [isValid, setIsValid] = useState(false);
   const [isChecking, setIsChecking] = useState(false);
 
-  const [customListUrl, setCustomListUrl] = useState("");
+  const [customListUrl, setCustomListUrl] = useState('');
 
   const validateApiKey = useCallback(
     async (key: string): Promise<boolean> => {
@@ -25,24 +25,24 @@ export default function MDBListIntegration() {
       setIsChecking(true);
       try {
         const response = await fetch(
-          `https://api.mdblist.com/lists/user?apikey=${key}`,
+          `https://api.mdblist.com/lists/user?apikey=${key}`
         );
         if (!response.ok) {
-          throw new Error("Failed to fetch lists");
+          throw new Error('Failed to fetch lists');
         }
 
         const lists = await response.json();
 
         const newCatalogs = lists.map((list) => ({
-          id: `mdblist.${list.id}.${list.mediatype === "movie" ? "movie" : "series"}`,
-          type: list.mediatype === "movie" ? "movie" : "series",
+          id: `mdblist.${list.id}.${list.mediatype === 'movie' ? 'movie' : 'series'}`,
+          type: list.mediatype === 'movie' ? 'movie' : 'series',
           name: list.name,
           enabled: true,
           showInHome: true,
         }));
 
         setCatalogs([
-          ...catalogs.filter((c) => !c.id.startsWith("mdblist.")),
+          ...catalogs.filter((c) => !c.id.startsWith('mdblist.')),
           ...newCatalogs,
         ]);
 
@@ -50,9 +50,9 @@ export default function MDBListIntegration() {
         return true;
       } catch (error) {
         const message =
-          (error as Error).message || "Failed to validate API key";
+          (error as Error).message || 'Failed to validate API key';
         toast({
-          title: "Failed to validate API key",
+          title: 'Failed to validate API key',
           description: message,
         });
         setIsValid(false);
@@ -61,7 +61,7 @@ export default function MDBListIntegration() {
         setIsChecking(false);
       }
     },
-    [catalogs, setCatalogs],
+    [catalogs, setCatalogs]
   );
 
   const handleSave = () => {
@@ -71,27 +71,27 @@ export default function MDBListIntegration() {
   };
 
   const handleCancel = () => {
-    setTempKey(mdblistkey || "");
+    setTempKey(mdblistkey || '');
     setIsValid(!!mdblistkey);
   };
 
   const handleAddCustomList = async () => {
     try {
       const path = new URL(customListUrl).pathname;
-      const listName = path.replace("/lists/", "");
+      const listName = path.replace('/lists/', '');
       if (!listName) {
-        throw new Error("Invalid URL");
+        throw new Error('Invalid URL');
       }
 
       const response = await fetch(
-        `https://api.mdblist.com/lists/${listName}?apikey=${tempKey}`,
+        `https://api.mdblist.com/lists/${listName}?apikey=${tempKey}`
       );
       if (!response.ok) {
-        throw new Error("Error fetching list");
+        throw new Error('Error fetching list');
       }
 
       const [list] = await response.json();
-      const type = list.mediatype === "movie" ? "movie" : "series";
+      const type = list.mediatype === 'movie' ? 'movie' : 'series';
 
       const newCatalog = {
         id: `mdblist.${list.id}.${type}`,
@@ -107,15 +107,15 @@ export default function MDBListIntegration() {
       });
 
       toast({
-        title: "List added",
+        title: 'List added',
         description: `The list "${list.name}" has been added successfully.`,
       });
 
-      setCustomListUrl("");
+      setCustomListUrl('');
     } catch (err) {
-      const message = (err as Error).message || "Error adding list";
+      const message = (err as Error).message || 'Error adding list';
       toast({
-        title: "Error adding list",
+        title: 'Error adding list',
         description: message,
       });
     }
@@ -126,7 +126,7 @@ export default function MDBListIntegration() {
       <div className="flex flex-col space-y-4">
         <div className="space-y-2">
           <Label htmlFor="mdblistkey">
-            MDBList API Key (get it from{" "}
+            MDBList API Key (get it from{' '}
             <a
               href="https://mdblist.com/preferences/"
               target="_blank"
@@ -154,7 +154,7 @@ export default function MDBListIntegration() {
           <div className="space-x-2 justify-between flex items-end">
             <div className="space-y-4 flex flex-col w-full">
               <Label htmlFor="customListUrl">
-                Add list by URL (Ex:{" "}
+                Add list by URL (Ex:{' '}
                 <a
                   href="https://mdblist.com/lists/garycrawfordgc/latest-tv-shows"
                   target="_blank"
@@ -202,7 +202,7 @@ export default function MDBListIntegration() {
                 Checking
               </>
             ) : (
-              "Check Key"
+              'Check Key'
             )}
           </Button>
         )}

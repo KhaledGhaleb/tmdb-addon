@@ -1,6 +1,6 @@
-import { useEffect } from "react";
-import { useConfig } from "@/contexts/use-config";
-import { baseCatalogs, authCatalogs, streamingCatalogs } from "@/data/catalogs";
+import { useEffect } from 'react';
+import { useConfig } from '@/contexts/use-config';
+import { baseCatalogs, authCatalogs, streamingCatalogs } from '@/data/catalogs';
 import {
   DndContext,
   DragEndEvent,
@@ -9,13 +9,13 @@ import {
   MouseSensor,
   useSensor,
   useSensors,
-} from "@dnd-kit/core";
+} from '@dnd-kit/core';
 import {
   SortableContext,
   verticalListSortingStrategy,
   arrayMove,
-} from "@dnd-kit/sortable";
-import { SortableCatalogCard } from "@/components/SortableCatalogCard";
+} from '@dnd-kit/sortable';
+import { SortableCatalogCard } from '@/components/SortableCatalogCard';
 
 const CatalogColumn = ({
   title,
@@ -84,7 +84,7 @@ const Catalogs = () => {
     setCatalogs((prev) => {
       const existingIds = new Set(prev.map((c) => `${c.id}-${c.type}`));
       const newCatalogs = allCatalogs.filter(
-        (c) => !existingIds.has(`${c.id}-${c.type}`),
+        (c) => !existingIds.has(`${c.id}-${c.type}`)
       );
 
       return [
@@ -114,7 +114,7 @@ const Catalogs = () => {
       return prev.map((c) =>
         c.id === catalogId && c.type === type
           ? { ...c, enabled: enabled === true, showInHome }
-          : c,
+          : c
       );
     });
   };
@@ -144,7 +144,7 @@ const Catalogs = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <CatalogColumn
           title="Movies"
-          catalogs={catalogs.filter((c) => c.type === "movie")}
+          catalogs={catalogs.filter((c) => c.type === 'movie')}
           catalogConfigs={catalogConfigs}
           onCatalogChange={handleCatalogChange}
           onDragEnd={handleDragEnd}
@@ -152,7 +152,7 @@ const Catalogs = () => {
         />
         <CatalogColumn
           title="TV Shows"
-          catalogs={catalogs.filter((c) => c.type === "series")}
+          catalogs={catalogs.filter((c) => c.type === 'series')}
           catalogConfigs={catalogConfigs}
           onCatalogChange={handleCatalogChange}
           onDragEnd={handleDragEnd}

@@ -1,20 +1,20 @@
-import "dotenv/config";
-import FanartTvApi from "fanart.tv-api";
-import { MovieDb } from "moviedb-promise";
+import 'dotenv/config';
+import FanartTvApi from 'fanart.tv-api';
+import { MovieDb } from 'moviedb-promise';
 
 const apiKey = process.env.FANART_API;
-const baseUrl = "http://webservice.fanart.tv/v3/";
+const baseUrl = 'http://webservice.fanart.tv/v3/';
 const fanart = new FanartTvApi({ apiKey, baseUrl });
 
 const moviedb = new MovieDb(process.env.TMDB_API);
 
 function pickLogo(logos, language, originalLanguage) {
-  const lang = language.split("-")[0];
+  const lang = language.split('-')[0];
 
   return (
     logos.find((l) => l.lang === lang) ||
     logos.find((l) => l.lang === originalLanguage) ||
-    logos.find((l) => l.lang === "en") ||
+    logos.find((l) => l.lang === 'en') ||
     logos[0]
   );
 }
@@ -38,22 +38,22 @@ async function getLogo(tmdbId, language, originalLanguage) {
 
   const fanartLogos = fanartRes.map((l) => ({
     url: l.url,
-    lang: l.lang || "en",
-    source: "fanart",
+    lang: l.lang || 'en',
+    source: 'fanart',
   }));
 
   const tmdbLogos = tmdbRes.map((l) => ({
     url: `https://image.tmdb.org/t/p/original${l.file_path}`,
-    lang: l.iso_639_1 || "en",
-    source: "tmdb",
+    lang: l.iso_639_1 || 'en',
+    source: 'tmdb',
   }));
 
   const combined = [...fanartLogos, ...tmdbLogos];
 
-  if (combined.length === 0) return "";
+  if (combined.length === 0) return '';
 
   const picked = pickLogo(combined, language, originalLanguage);
-  return picked?.url || "";
+  return picked?.url || '';
 }
 
 async function getTvLogo(tvdb_id, tmdbId, language, originalLanguage) {
@@ -79,22 +79,22 @@ async function getTvLogo(tvdb_id, tmdbId, language, originalLanguage) {
 
   const fanartLogos = fanartRes.map((l) => ({
     url: l.url,
-    lang: l.lang || "en",
-    source: "fanart",
+    lang: l.lang || 'en',
+    source: 'fanart',
   }));
 
   const tmdbLogos = tmdbRes.map((l) => ({
     url: `https://image.tmdb.org/t/p/original${l.file_path}`,
-    lang: l.iso_639_1 || "en",
-    source: "tmdb",
+    lang: l.iso_639_1 || 'en',
+    source: 'tmdb',
   }));
 
   const combined = [...fanartLogos, ...tmdbLogos];
 
-  if (combined.length === 0) return "";
+  if (combined.length === 0) return '';
 
   const picked = pickLogo(combined, language, originalLanguage);
-  return picked?.url || "";
+  return picked?.url || '';
 }
 
 export { getLogo, getTvLogo };

@@ -1,7 +1,7 @@
-import "dotenv/config";
-import express from "express";
-import swaggerStats from "swagger-stats";
-import packageJson from "../../package.json" with { type: "json" };
+import 'dotenv/config';
+import express from 'express';
+import swaggerStats from 'swagger-stats';
+import packageJson from '../../package.json' with { type: 'json' };
 
 class Analytics {
   static instance;
@@ -13,7 +13,7 @@ class Analytics {
         name: packageJson.name,
         version: packageJson.version,
         timelineBucketDuration: 60000,
-        uriPath: "/stats/ui",
+        uriPath: '/stats/ui',
         authentication: true,
         onAuthenticate: (req, username, password) => {
           return (
@@ -23,7 +23,7 @@ class Analytics {
         },
         swaggerSpec: {
           info: {
-            title: "TMDB Addon API",
+            title: 'TMDB Addon API',
             version: packageJson.version,
           },
         },

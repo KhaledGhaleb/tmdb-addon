@@ -1,4 +1,4 @@
-import { addon } from "./index.js"; // note the .js extension
+import { addon } from './index.js'; // note the .js extension
 
 const PORT = process.env.PORT || 1337;
 

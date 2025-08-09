@@ -1,17 +1,17 @@
-import sharp from "sharp";
-import axios from "axios";
+import sharp from 'sharp';
+import axios from 'axios';
 
 async function blurImage(imageUrl) {
   try {
     const response = await axios.get(imageUrl, {
-      responseType: "arraybuffer",
+      responseType: 'arraybuffer',
     });
 
     const processedImageBuffer = await sharp(response.data).blur(20).toBuffer();
 
     return processedImageBuffer;
   } catch (error) {
-    console.error("Erro ao processar imagem:", error);
+    console.error('Erro ao processar imagem:', error);
     return null;
   }
 }

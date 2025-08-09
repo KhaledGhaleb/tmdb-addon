@@ -1,8 +1,8 @@
-import { Card } from "@/components/ui/card";
-import { Switch } from "@/components/ui/switch";
-import { useConfig } from "@/contexts/use-config";
-import { AgeRatingSelect } from "@/components/AgeRatingSelect";
-import { SearchToggle } from "@/components/SearchToggle";
+import { Card } from '@/components/ui/card';
+import { Switch } from '@/components/ui/switch';
+import { useConfig } from '@/contexts/use-config';
+import { AgeRatingSelect } from '@/components/AgeRatingSelect';
+import { SearchToggle } from '@/components/SearchToggle';
 
 const Others = () => {
   const { hideEpisodeThumbnails, setHideEpisodeThumbnails } = useConfig();
@@ -95,10 +95,10 @@ const Others = () => {
           </div>
           <select
             className="border rounded px-2 py-1 text-sm"
-            value={castCount === undefined ? "Unlimited" : castCount}
+            value={castCount === undefined ? 'Unlimited' : castCount}
             onChange={(e) => {
               const value = e.target.value;
-              setCastCount(value === "Unlimited" ? undefined : Number(value));
+              setCastCount(value === 'Unlimited' ? undefined : Number(value));
             }}
           >
             <option value={5}>5</option>

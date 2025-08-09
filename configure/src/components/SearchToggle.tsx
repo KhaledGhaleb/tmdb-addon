@@ -1,6 +1,6 @@
-import { Switch } from "@/components/ui/switch";
-import { useConfig } from "@/contexts/use-config";
-import { Card } from "@/components/ui/card";
+import { Switch } from '@/components/ui/switch';
+import { useConfig } from '@/contexts/use-config';
+import { Card } from '@/components/ui/card';
 
 export function SearchToggle() {
   const { searchEnabled, setSearchEnabled } = useConfig();

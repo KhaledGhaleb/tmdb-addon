@@ -1,8 +1,8 @@
-import "dotenv/config";
-import { MovieDb } from "moviedb-promise";
-import { getGenreList } from "./getGenreList.js";
-import { parseMedia } from "../utils/parseProps.js";
-import translations from "../static/translations.json" with { type: "json" };
+import 'dotenv/config';
+import { MovieDb } from 'moviedb-promise';
+import { getGenreList } from './getGenreList.js';
+import { parseMedia } from '../utils/parseProps.js';
+import translations from '../static/translations.json' with { type: 'json' };
 
 const moviedb = new MovieDb(process.env.TMDB_API);
 
@@ -13,9 +13,9 @@ function getAllTranslations(key) {
 }
 
 const API_FIELD_MAPPING = {
-  added_date: "created_at",
-  popularity: "popularity",
-  release_date: "release_date",
+  added_date: 'created_at',
+  popularity: 'popularity',
+  release_date: 'release_date',
 };
 
 function sortResults(results, genre) {
@@ -23,7 +23,7 @@ function sortResults(results, genre) {
 
   let sortedResults = [...results];
 
-  const randomTranslations = getAllTranslations("random");
+  const randomTranslations = getAllTranslations('random');
   if (randomTranslations.includes(genre)) {
     return shuffleArray(sortedResults);
   }
@@ -31,9 +31,9 @@ function sortResults(results, genre) {
   let field, order;
 
   const fields = {
-    added_date: getAllTranslations("added_date"),
-    popularity: getAllTranslations("popularity"),
-    release_date: getAllTranslations("release_date"),
+    added_date: getAllTranslations('added_date'),
+    popularity: getAllTranslations('popularity'),
+    release_date: getAllTranslations('release_date'),
   };
 
   for (const [fieldName, translations] of Object.entries(fields)) {
@@ -45,13 +45,13 @@ function sortResults(results, genre) {
 
   if (!field) return sortedResults;
 
-  const ascTranslations = getAllTranslations("asc");
-  const descTranslations = getAllTranslations("desc");
+  const ascTranslations = getAllTranslations('asc');
+  const descTranslations = getAllTranslations('desc');
 
   if (ascTranslations.some((t) => genre.includes(t))) {
-    order = "asc";
+    order = 'asc';
   } else if (descTranslations.some((t) => genre.includes(t))) {
-    order = "desc";
+    order = 'desc';
   } else {
     return sortedResults;
   }
@@ -60,20 +60,20 @@ function sortResults(results, genre) {
     let valueA, valueB;
 
     switch (field) {
-      case "release_date":
+      case 'release_date':
         valueA = a.release_date || a.first_air_date;
         valueB = b.release_date || b.first_air_date;
         break;
-      case "popularity":
+      case 'popularity':
         valueA = a.popularity;
         valueB = b.popularity;
         break;
-      case "added_date":
+      case 'added_date':
       default:
         return 0;
     }
 
-    if (order === "asc") {
+    if (order === 'asc') {
       return valueA < valueB ? -1 : 1;
     }
     return valueA > valueB ? -1 : 1;
@@ -84,15 +84,15 @@ function sortResults(results, genre) {
 
 function configureSortingParameters(parameters, genre) {
   const fields = {
-    added_date: getAllTranslations("added_date"),
-    popularity: getAllTranslations("popularity"),
-    release_date: getAllTranslations("release_date"),
+    added_date: getAllTranslations('added_date'),
+    popularity: getAllTranslations('popularity'),
+    release_date: getAllTranslations('release_date'),
   };
 
   for (const [fieldName, translations] of Object.entries(fields)) {
     if (translations.some((t) => genre?.includes(t))) {
-      const ascTranslations = getAllTranslations("asc");
-      const descTranslations = getAllTranslations("desc");
+      const ascTranslations = getAllTranslations('asc');
+      const descTranslations = getAllTranslations('desc');
 
       if (ascTranslations.some((t) => genre.includes(t))) {
         parameters.sort_by = `${API_FIELD_MAPPING[fieldName]}.asc`;
@@ -112,14 +112,14 @@ async function getFavorites(type, language, page, genre, sessionId) {
 
   const genreList = await getGenreList(language, type);
   const fetchFunction =
-    type === "movie"
+    type === 'movie'
       ? moviedb.accountFavoriteMovies.bind(moviedb)
       : moviedb.accountFavoriteTv.bind(moviedb);
 
   return fetchFunction(parameters)
     .then((res) => ({
       metas: sortResults(res.results, genre).map((el) =>
-        parseMedia(el, type, genreList),
+        parseMedia(el, type, genreList)
       ),
     }))
     .catch(console.error);
@@ -132,14 +132,14 @@ async function getWatchList(type, language, page, genre, sessionId) {
 
   const genreList = await getGenreList(language, type);
   const fetchFunction =
-    type === "movie"
+    type === 'movie'
       ? moviedb.accountMovieWatchlist.bind(moviedb)
       : moviedb.accountTvWatchlist.bind(moviedb);
 
   return fetchFunction(parameters)
     .then((res) => ({
       metas: sortResults(res.results, genre).map((el) =>
-        parseMedia(el, type, genreList),
+        parseMedia(el, type, genreList)
       ),
     }))
     .catch(console.error);

@@ -1,34 +1,34 @@
-import path from "path";
+import path from 'path';
 // addon/server.js
-import express from "express";
-import favicon from "serve-favicon";
-import { fileURLToPath } from "url";
+import express from 'express';
+import favicon from 'serve-favicon';
+import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-import { getMeta } from "./lib/getMeta.js";
-import { getTmdb } from "./lib/getTmdb.js";
-import analytics from "./utils/analytics.js";
-import { getSearch } from "./lib/getSearch.js";
-import { getCatalog } from "./lib/getCatalog.js";
-import { cacheWrapMeta } from "./lib/getCache.js";
-import { getTrending } from "./lib/getTrending.js";
-import { getManifest, DEFAULT_LANGUAGE } from "./lib/getManifest.js";
+import { getMeta } from './lib/getMeta.js';
+import { getTmdb } from './lib/getTmdb.js';
+import analytics from './utils/analytics.js';
+import { getSearch } from './lib/getSearch.js';
+import { getCatalog } from './lib/getCatalog.js';
+import { cacheWrapMeta } from './lib/getCache.js';
+import { getTrending } from './lib/getTrending.js';
+import { getManifest, DEFAULT_LANGUAGE } from './lib/getManifest.js';
 import {
   parseConfig,
   getRpdbPoster,
   checkIfExists,
-} from "./utils/parseProps.js";
-import { blurImage } from "./utils/imageProcessor.js";
-import { getRequestToken, getSessionId } from "./lib/getSession.js";
-import { getFavorites, getWatchList } from "./lib/getPersonalLists.js";
+} from './utils/parseProps.js';
+import { blurImage } from './utils/imageProcessor.js';
+import { getRequestToken, getSessionId } from './lib/getSession.js';
+import { getFavorites, getWatchList } from './lib/getPersonalLists.js';
 
 const addon = express();
 addon.use(analytics.middleware);
-addon.use(favicon(path.join(__dirname, "../public/favicon.png")));
-addon.use(express.static(path.join(__dirname, "../public")));
-addon.use(express.static(path.join(__dirname, "../dist")));
+addon.use(favicon(path.join(__dirname, '../public/favicon.png')));
+addon.use(express.static(path.join(__dirname, '../public')));
+addon.use(express.static(path.join(__dirname, '../dist')));
 
 const getCacheHeaders = function (opts) {
   opts = opts || {};
@@ -36,58 +36,58 @@ const getCacheHeaders = function (opts) {
   if (!Object.keys(opts).length) return false;
 
   let cacheHeaders = {
-    cacheMaxAge: "max-age",
-    staleRevalidate: "stale-while-revalidate",
-    staleError: "stale-if-error",
+    cacheMaxAge: 'max-age',
+    staleRevalidate: 'stale-while-revalidate',
+    staleError: 'stale-if-error',
   };
 
   return Object.keys(cacheHeaders)
     .map((prop) => {
       const value = opts[prop];
       if (!value) return false;
-      return cacheHeaders[prop] + "=" + value;
+      return cacheHeaders[prop] + '=' + value;
     })
     .filter((val) => !!val)
-    .join(", ");
+    .join(', ');
 };
 
 const respond = function (res, data, opts) {
   const cacheControl = getCacheHeaders(opts);
-  if (cacheControl) res.setHeader("Cache-Control", `${cacheControl}, public`);
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Headers", "*");
-  res.setHeader("Content-Type", "application/json");
+  if (cacheControl) res.setHeader('Cache-Control', `${cacheControl}, public`);
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Headers', '*');
+  res.setHeader('Content-Type', 'application/json');
   res.send(data);
 };
 
-addon.get("/", function (_, res) {
-  res.redirect("/configure");
+addon.get('/', function (_, res) {
+  res.redirect('/configure');
 });
 
-addon.get("/request_token", async function (req, res) {
+addon.get('/request_token', async function (req, res) {
   const requestToken = await getRequestToken();
   respond(res, requestToken);
 });
 
-addon.get("/session_id", async function (req, res) {
+addon.get('/session_id', async function (req, res) {
   const requestToken = req.query.request_token;
   const sessionId = await getSessionId(requestToken);
   respond(res, sessionId);
 });
 
-addon.use("/configure", express.static(path.join(__dirname, "../dist")));
+addon.use('/configure', express.static(path.join(__dirname, '../dist')));
 
-addon.use("/configure", (req, res, next) => {
+addon.use('/configure', (req, res, next) => {
   const config = parseConfig(req.params.catalogChoices) || {};
   next();
 });
 
-addon.get("/:catalogChoices?/configure", function (req, res) {
-  res.sendFile(path.join(__dirname, "../dist/index.html"));
+addon.get('/:catalogChoices?/configure', function (req, res) {
+  res.sendFile(path.join(__dirname, '../dist/index.html'));
 });
 
-addon.get("/:catalogChoices?/manifest.json", async function (req, res) {
-  console.log("manifest.json", req.params);
+addon.get('/:catalogChoices?/manifest.json', async function (req, res) {
+  console.log('manifest.json', req.params);
   const { catalogChoices } = req.params;
   const config = parseConfig(catalogChoices) || {};
   const manifest = await getManifest(config);
@@ -101,7 +101,7 @@ addon.get("/:catalogChoices?/manifest.json", async function (req, res) {
 });
 
 addon.get(
-  "/:catalogChoices?/catalog/:type/:id/:extra?.json",
+  '/:catalogChoices?/catalog/:type/:id/:extra?.json',
   async function (req, res) {
     const { catalogChoices, type, id, extra } = req.params;
     const config = parseConfig(catalogChoices) || {};
@@ -111,8 +111,8 @@ addon.get(
     const { genre, skip, search } = extra
       ? Object.fromEntries(
           new URLSearchParams(
-            req.url.split("/").pop().split("?")[0].slice(0, -5),
-          ).entries(),
+            req.url.split('/').pop().split('?')[0].slice(0, -5)
+          ).entries()
         )
       : {};
     const page = Math.ceil(skip ? skip / 20 + 1 : undefined) || 1;
@@ -121,16 +121,17 @@ addon.get(
       const args = [type, language, page];
 
       if (search) {
+        console.log(id, type, language, search, config);
         metas = await getSearch(id, type, language, search, config);
       } else {
         switch (id) {
-          case "tmdb.trending":
+          case 'tmdb.trending':
             metas = await getTrending(...args, genre, config);
             break;
-          case "tmdb.favorites":
+          case 'tmdb.favorites':
             metas = await getFavorites(...args, genre, sessionId);
             break;
-          case "tmdb.watchlist":
+          case 'tmdb.watchlist':
             metas = await getWatchList(...args, genre, sessionId);
             break;
           default:
@@ -139,7 +140,7 @@ addon.get(
         }
       }
     } catch (e) {
-      res.status(404).send((e || {}).message || "Not found");
+      res.status(404).send((e || {}).message || 'Not found');
       return;
     }
     const cacheOpts = {
@@ -154,70 +155,70 @@ addon.get(
           metas.metas.map(async (el) => {
             const rpdbImage = getRpdbPoster(
               type,
-              el.id.replace("tmdb:", ""),
+              el.id.replace('tmdb:', ''),
               language,
-              rpdbkey,
+              rpdbkey
             );
             el.poster = (await checkIfExists(rpdbImage))
               ? rpdbImage
               : el.poster;
             return el;
-          }),
+          })
         );
       } catch (e) {}
     }
     respond(res, metas, cacheOpts);
-  },
+  }
 );
 
-addon.get("/:catalogChoices?/meta/:type/:id.json", async function (req, res) {
+addon.get('/:catalogChoices?/meta/:type/:id.json', async function (req, res) {
   const { catalogChoices, type, id } = req.params;
   const config = parseConfig(catalogChoices) || {};
-  const tmdbId = id.split(":")[1];
+  const tmdbId = id.split(':')[1];
   const language = config.language || DEFAULT_LANGUAGE;
   const rpdbkey = config.rpdbkey;
-  const imdbId = req.params.id.split(":")[0];
+  const imdbId = req.params.id.split(':')[0];
 
-  if (req.params.id.includes("tmdb:")) {
+  if (req.params.id.includes('tmdb:')) {
     const resp = await cacheWrapMeta(
       `${language}:${type}:${tmdbId}`,
       async () => {
         return await getMeta(type, language, tmdbId, rpdbkey, {
-          hideEpisodeThumbnails: config.hideEpisodeThumbnails === "true",
+          hideEpisodeThumbnails: config.hideEpisodeThumbnails === 'true',
         });
-      },
+      }
     );
     const cacheOpts = {
       staleRevalidate: 20 * 24 * 60 * 60,
       staleError: 30 * 24 * 60 * 60,
     };
-    if (type == "movie") {
+    if (type == 'movie') {
       cacheOpts.cacheMaxAge = 14 * 24 * 60 * 60;
-    } else if (type == "series") {
-      const hasEnded = !!((resp.releaseInfo || "").length > 5);
+    } else if (type == 'series') {
+      const hasEnded = !!((resp.releaseInfo || '').length > 5);
       cacheOpts.cacheMaxAge = (hasEnded ? 14 : 1) * 24 * 60 * 60;
     }
     respond(res, resp, cacheOpts);
   }
-  if (req.params.id.includes("tt")) {
+  if (req.params.id.includes('tt')) {
     const tmdbId = await getTmdb(type, imdbId);
     if (tmdbId) {
       const resp = await cacheWrapMeta(
         `${language}:${type}:${tmdbId}`,
         async () => {
           return await getMeta(type, language, tmdbId, rpdbkey, {
-            hideEpisodeThumbnails: config.hideEpisodeThumbnails === "true",
+            hideEpisodeThumbnails: config.hideEpisodeThumbnails === 'true',
           });
-        },
+        }
       );
       const cacheOpts = {
         staleRevalidate: 20 * 24 * 60 * 60,
         staleError: 30 * 24 * 60 * 60,
       };
-      if (type == "movie") {
+      if (type == 'movie') {
         cacheOpts.cacheMaxAge = 14 * 24 * 60 * 60;
-      } else if (type == "series") {
-        const hasEnded = !!((resp.releaseInfo || "").length > 5);
+      } else if (type == 'series') {
+        const hasEnded = !!((resp.releaseInfo || '').length > 5);
         cacheOpts.cacheMaxAge = (hasEnded ? 14 : 1) * 24 * 60 * 60;
       }
       respond(res, resp, cacheOpts);
@@ -227,27 +228,27 @@ addon.get("/:catalogChoices?/meta/:type/:id.json", async function (req, res) {
   }
 });
 
-addon.get("/api/image/blur", async function (req, res) {
+addon.get('/api/image/blur', async function (req, res) {
   const imageUrl = req.query.url;
 
   if (!imageUrl) {
-    return res.status(400).json({ error: "URL da imagem não fornecida" });
+    return res.status(400).json({ error: 'URL da imagem não fornecida' });
   }
 
   try {
     const blurredImageBuffer = await blurImage(imageUrl);
 
     if (!blurredImageBuffer) {
-      return res.status(500).json({ error: "Erro ao processar imagem" });
+      return res.status(500).json({ error: 'Erro ao processar imagem' });
     }
 
-    res.setHeader("Content-Type", "image/jpeg");
-    res.setHeader("Cache-Control", "public, max-age=31536000");
+    res.setHeader('Content-Type', 'image/jpeg');
+    res.setHeader('Cache-Control', 'public, max-age=31536000');
 
     res.send(blurredImageBuffer);
   } catch (error) {
-    console.error("Erro na rota de blur:", error);
-    res.status(500).json({ error: "Erro interno do servidor" });
+    console.error('Erro na rota de blur:', error);
+    res.status(500).json({ error: 'Erro interno do servidor' });
   }
 });
 

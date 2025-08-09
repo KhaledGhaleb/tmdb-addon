@@ -1,8 +1,8 @@
-import Redis from "ioredis";
-import cacheManager from "cache-manager";
-import redisStore from "cache-manager-ioredis";
+import Redis from 'ioredis';
+import cacheManager from 'cache-manager';
+import redisStore from 'cache-manager-ioredis';
 
-const GLOBAL_KEY_PREFIX = "tmdb-addon";
+const GLOBAL_KEY_PREFIX = 'tmdb-addon';
 const META_KEY_PREFIX = `${GLOBAL_KEY_PREFIX}|meta`;
 const CATALOG_KEY_PREFIX = `${GLOBAL_KEY_PREFIX}|catalog`;
 
@@ -26,7 +26,7 @@ function initiateCache() {
     });
   } else {
     return cacheManager.caching({
-      store: "memory",
+      store: 'memory',
       ttl: META_TTL,
     });
   }

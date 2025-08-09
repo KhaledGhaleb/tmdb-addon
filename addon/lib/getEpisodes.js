@@ -1,25 +1,25 @@
-import "dotenv/config";
-import { createRequire } from "module";
-import { MovieDb } from "moviedb-promise";
+import 'dotenv/config';
+import { createRequire } from 'module';
+import { MovieDb } from 'moviedb-promise';
 const require = createRequire(import.meta.url);
 
 const moviedb = new MovieDb(process.env.TMDB_API);
 
 // JSON via require (works in ESM with createRequire)
-const diferentOrder = require("../static/diferentOrder.json");
-const diferentImdbId = require("../static/diferentImdbId.json");
+const diferentOrder = require('../static/diferentOrder.json');
+const diferentImdbId = require('../static/diferentImdbId.json');
 
 function genSeasonsString(seasons) {
   if (seasons.length <= 20) {
     return [
-      seasons.map((season) => `season/${season.season_number}`).join(","),
+      seasons.map((season) => `season/${season.season_number}`).join(','),
     ];
   } else {
     const result = new Array(Math.ceil(seasons.length / 20))
       .fill()
       .map((_) => seasons.splice(0, 20));
     return result.map((arr) => {
-      return arr.map((season) => `season/${season.season_number}`).join(",");
+      return arr.map((season) => `season/${season.season_number}`).join(',');
     });
   }
 }
@@ -31,7 +31,7 @@ function getThumbnailUrl(stillPath, hideEpisodeThumbnails) {
 
   if (hideEpisodeThumbnails) {
     return `${process.env.HOST_NAME}/api/image/blur?url=${encodeURIComponent(
-      baseImageUrl,
+      baseImageUrl
     )}`;
   }
 
@@ -60,7 +60,7 @@ async function getEpisodes(language, tmdbId, imdb_id, seasons, config = {}) {
               episode: index + 1,
               thumbnail: getThumbnailUrl(
                 episode.still_path,
-                hideEpisodeThumbnails,
+                hideEpisodeThumbnails
               ),
               overview: episode.overview,
               description: episode.overview,
@@ -71,9 +71,9 @@ async function getEpisodes(language, tmdbId, imdb_id, seasons, config = {}) {
               released: difOrder.watchOrderOnly
                 ? new Date(Date.parse(group.episodes[0].air_date) + index)
                 : new Date(Date.parse(episode.air_date) + index),
-            })),
+            }))
           )
-          .reduce((a, b) => a.concat(b), []),
+          .reduce((a, b) => a.concat(b), [])
       )
       .catch(console.error);
   } else {
@@ -83,7 +83,7 @@ async function getEpisodes(language, tmdbId, imdb_id, seasons, config = {}) {
         await moviedb
           .tvInfo({ id: tmdbId, language, append_to_response: el })
           .then((res) => {
-            const splitSeasons = el.split(",");
+            const splitSeasons = el.split(',');
             splitSeasons.map((season) => {
               if (res[season]) {
                 res[season].episodes.map((episode, index) => {
@@ -97,16 +97,16 @@ async function getEpisodes(language, tmdbId, imdb_id, seasons, config = {}) {
                     episode: index + 1,
                     thumbnail: getThumbnailUrl(
                       episode.still_path,
-                      hideEpisodeThumbnails,
+                      hideEpisodeThumbnails
                     ),
                     overview: episode.overview,
                     description: episode.overview,
                     rating: episode.vote_average.toString(),
                     firstAired: new Date(
-                      Date.parse(episode.air_date) + episode.season_number,
+                      Date.parse(episode.air_date) + episode.season_number
                     ),
                     released: new Date(
-                      Date.parse(episode.air_date) + episode.season_number,
+                      Date.parse(episode.air_date) + episode.season_number
                     ),
                   });
                 });
@@ -114,7 +114,7 @@ async function getEpisodes(language, tmdbId, imdb_id, seasons, config = {}) {
             });
           })
           .catch(console.error);
-      }),
+      })
     );
     return episodes;
   }

@@ -4,11 +4,11 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
-import { ageRatings } from "@/data/ageRatings";
-import { useConfig } from "@/contexts/use-config";
-import { Info } from "lucide-react";
+} from '@/components/ui/select';
+import { Badge } from '@/components/ui/badge';
+import { ageRatings } from '@/data/ageRatings';
+import { useConfig } from '@/contexts/use-config';
+import { Info } from 'lucide-react';
 
 export function AgeRatingSelect() {
   const { ageRating, setAgeRating } = useConfig();
@@ -16,7 +16,7 @@ export function AgeRatingSelect() {
   const selectedRating = ageRatings.find((rating) => rating.id === ageRating);
 
   const handleChange = (value: string) => {
-    setAgeRating(value === "NONE" ? undefined : value);
+    setAgeRating(value === 'NONE' ? undefined : value);
   };
 
   return (
@@ -28,7 +28,7 @@ export function AgeRatingSelect() {
           Not available for trending catalogs
         </div>
       </div>
-      <Select value={ageRating || "NONE"} onValueChange={handleChange}>
+      <Select value={ageRating || 'NONE'} onValueChange={handleChange}>
         <SelectTrigger>
           <SelectValue>
             {selectedRating && (

@@ -1,14 +1,14 @@
-import "dotenv/config";
-import { getMeta } from "./getMeta.js";
-import { MovieDb } from "moviedb-promise";
+import 'dotenv/config';
+import { getMeta } from './getMeta.js';
+import { MovieDb } from 'moviedb-promise';
 
 const moviedb = new MovieDb(process.env.TMDB_API);
 
 async function getTrending(type, language, page, genre, config) {
-  const media_type = type === "series" ? "tv" : type;
+  const media_type = type === 'series' ? 'tv' : type;
   const parameters = {
     media_type,
-    time_window: genre ? genre.toLowerCase() : "day",
+    time_window: genre ? genre.toLowerCase() : 'day',
     language,
     page,
   };
@@ -22,10 +22,10 @@ async function getTrending(type, language, page, genre, config) {
           .catch((err) => {
             console.error(
               `Erro ao buscar metadados para ${item.id}:`,
-              err.message,
+              err.message
             );
             return null;
-          }),
+          })
       );
 
       const metas = (await Promise.all(metaPromises)).filter(Boolean);

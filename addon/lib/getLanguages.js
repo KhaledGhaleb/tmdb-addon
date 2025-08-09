@@ -1,5 +1,5 @@
-import "dotenv/config";
-import { MovieDb } from "moviedb-promise";
+import 'dotenv/config';
+import { MovieDb } from 'moviedb-promise';
 const moviedb = new MovieDb(process.env.TMDB_API);
 
 async function getLanguages() {
@@ -8,7 +8,7 @@ async function getLanguages() {
     moviedb.languages(),
   ]);
   return primaryTranslations.map((element) => {
-    const [language, country] = element.split("-");
+    const [language, country] = element.split('-');
     const findLanguage = languages.find((obj) => obj.iso_639_1 === language);
     return { iso_639_1: element, name: findLanguage.english_name };
   });

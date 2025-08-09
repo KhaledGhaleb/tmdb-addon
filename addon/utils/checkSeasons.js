@@ -1,5 +1,5 @@
-import axios from "axios";
-import { cache } from "../lib/getCache.js";
+import axios from 'axios';
+import { cache } from '../lib/getCache.js';
 
 const CHECK_INTERVAL_DAYS = 7; // You can adjust as needed
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
@@ -20,7 +20,7 @@ async function openGithubIssue(title, body, labels = []) {
   await axios.post(
     `https://api.github.com/repos/${GITHUB_REPO}/issues`,
     { title, body, labels },
-    { headers: { Authorization: `token ${GITHUB_TOKEN}` } },
+    { headers: { Authorization: `token ${GITHUB_TOKEN}` } }
   );
 }
 
@@ -33,7 +33,7 @@ async function issueExistsOnGithub(title) {
     });
     return resp.data.some((issue) => issue.title === title);
   } catch (e) {
-    console.error("Error checking existing issues:", e.message);
+    console.error('Error checking existing issues:', e.message);
     return false;
   }
 }
@@ -41,7 +41,7 @@ async function issueExistsOnGithub(title) {
 async function checkSeasonsAndReport(tmdbId, imdbId, resp, name) {
   // Se não há cache disponível, pula a verificação
   if (!cache) {
-    console.log("Cache not available, skipping season check");
+    console.log('Cache not available, skipping season check');
     return;
   }
 
@@ -60,11 +60,11 @@ async function checkSeasonsAndReport(tmdbId, imdbId, resp, name) {
     tmdbSeasons = new Set(
       resp.meta.videos
         .map((v) => v.season)
-        .filter((season) => season !== 0 && season !== "0"),
+        .filter((season) => season !== 0 && season !== '0')
     ).size;
   } else if (resp.seasons) {
     tmdbSeasons = resp.seasons.filter(
-      (s) => s.season_number !== 0 && s.season_number !== "0",
+      (s) => s.season_number !== 0 && s.season_number !== '0'
     ).length;
   }
 
@@ -78,7 +78,7 @@ async function checkSeasonsAndReport(tmdbId, imdbId, resp, name) {
     stremioSeasons = new Set(
       stremioVideos
         .map((v) => v.season)
-        .filter((season) => season !== 0 && season !== "0"),
+        .filter((season) => season !== 0 && season !== '0')
     ).size;
     if (stremioResp.data.meta && stremioResp.data.meta.name) {
       stremioName = stremioResp.data.meta.name;
@@ -90,7 +90,7 @@ async function checkSeasonsAndReport(tmdbId, imdbId, resp, name) {
 
   // 3. Compare and open issue if necessary
   if (tmdbSeasons !== stremioSeasons) {
-    console.log("Mismatch found");
+    console.log('Mismatch found');
     const tmdbLink = `https://www.themoviedb.org/tv/${tmdbId}`;
     const stremioLink = `https://web.stremio.com/#/detail/series/${imdbId}`;
     const issueTitle = `Season count mismatch in "${stremioName}"`;
@@ -106,16 +106,16 @@ async function checkSeasonsAndReport(tmdbId, imdbId, resp, name) {
       `- [Stremio page](${stremioLink})`;
     // Verifica se já existe issue aberta para esse título
     const exists = await issueExistsOnGithub(issueTitle);
-    console.log("Exists:", exists);
+    console.log('Exists:', exists);
     if (!exists) {
-      console.log("Creating issue:", issueTitle);
-      await openGithubIssue(issueTitle, body, ["season-mismatch"]);
+      console.log('Creating issue:', issueTitle);
+      await openGithubIssue(issueTitle, body, ['season-mismatch']);
     }
   }
 
   // 4. Update lastChecked
   await setLastChecked(tmdbId, { lastChecked: now.toISOString() });
-  console.log("Last checked updated");
+  console.log('Last checked updated');
 }
 
 export { checkSeasonsAndReport };

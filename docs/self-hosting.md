@@ -38,13 +38,13 @@ docker run -d \
 Create a `docker-compose.yml` file:
 
 ```yaml
-version: "3"
+version: '3'
 services:
   tmdb-addon:
     image: mrcanelas/tmdb-addon:latest
     container_name: tmdb-addon
     ports:
-      - "1337:1337"
+      - '1337:1337'
     environment:
       - MONGODB_URI=your_mongodb_uri
       - FANART_API=your_fanart_key

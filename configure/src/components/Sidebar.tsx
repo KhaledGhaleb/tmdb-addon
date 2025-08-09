@@ -1,17 +1,17 @@
-import MultiActionButton from "@/components/MultiActionButton";
-import { Home, GalleryVerticalEnd, Puzzle, Settings } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { KoFiDialog } from "react-kofi";
-import "react-kofi/dist/styles.css";
-import "@/styles/kofi-dialog.css";
+import MultiActionButton from '@/components/MultiActionButton';
+import { Home, GalleryVerticalEnd, Puzzle, Settings } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { KoFiDialog } from 'react-kofi';
+import 'react-kofi/dist/styles.css';
+import '@/styles/kofi-dialog.css';
 
-type Page = "home" | "catalogs" | "integrations" | "others";
+type Page = 'home' | 'catalogs' | 'integrations' | 'others';
 
 const menuItems = [
-  { icon: Home, label: "Home", id: "home" as Page },
-  { icon: GalleryVerticalEnd, label: "Catalogs", id: "catalogs" as Page },
-  { icon: Puzzle, label: "Integrations", id: "integrations" as Page },
-  { icon: Settings, label: "Others", id: "others" as Page },
+  { icon: Home, label: 'Home', id: 'home' as Page },
+  { icon: GalleryVerticalEnd, label: 'Catalogs', id: 'catalogs' as Page },
+  { icon: Puzzle, label: 'Integrations', id: 'integrations' as Page },
+  { icon: Settings, label: 'Others', id: 'others' as Page },
 ];
 
 interface SidebarProps {
@@ -31,9 +31,9 @@ export function Sidebar({
     <>
       <div
         className={cn(
-          "fixed inset-y-0 left-0 z-40 bg-sidebar transform transition-transform duration-200 ease-in-out",
-          isOpen ? "translate-x-0" : "-translate-x-full",
-          "md:translate-x-0",
+          'fixed inset-y-0 left-0 z-40 bg-sidebar transform transition-transform duration-200 ease-in-out',
+          isOpen ? 'translate-x-0' : '-translate-x-full',
+          'md:translate-x-0'
         )}
       >
         <div className="flex flex-col min-h-screen py-6 space-y-10">
@@ -55,8 +55,8 @@ export function Sidebar({
                       setIsOpen(false);
                     }}
                     className={cn(
-                      "flex items-center w-full px-6 py-2 mt-4 text-gray-500 hover:bg-gray-700 hover:bg-opacity-25 hover:text-gray-100",
-                      currentPage === item.id && "bg-gray-700 text-gray-100",
+                      'flex items-center w-full px-6 py-2 mt-4 text-gray-500 hover:bg-gray-700 hover:bg-opacity-25 hover:text-gray-100',
+                      currentPage === item.id && 'bg-gray-700 text-gray-100'
                     )}
                   >
                     <item.icon className="w-5 h-5 mr-2" />

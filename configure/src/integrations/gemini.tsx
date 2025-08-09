@@ -1,16 +1,16 @@
-import { useState, useEffect } from "react";
-import { useConfig } from "@/contexts/use-config";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { DialogClose } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AlertCircle, Loader2 } from "lucide-react";
+import { useState, useEffect } from 'react';
+import { useConfig } from '@/contexts/use-config';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { DialogClose } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { AlertCircle, Loader2 } from 'lucide-react';
 
 export default function Gemini() {
   const { geminikey, setGeminiKey } = useConfig();
   const [tempKey, setTempKey] = useState(geminikey);
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
   const [isValid, setIsValid] = useState(false);
   const [isChecking, setIsChecking] = useState(false);
 
@@ -24,28 +24,28 @@ export default function Gemini() {
   const validateGeminiKey = async (key: string) => {
     if (!key) {
       setIsValid(false);
-      setError("");
+      setError('');
       return false;
     }
 
     setIsChecking(true);
     try {
       const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1/models?key=${key}`,
+        `https://generativelanguage.googleapis.com/v1/models?key=${key}`
       );
       const data = await response.json();
 
       if (!(data || {})) {
-        setError("Gemini Key is invalid, please try again");
+        setError('Gemini Key is invalid, please try again');
         setIsValid(false);
         return false;
       }
-      setError("");
+      setError('');
       setIsValid(true);
       return true;
     } catch (e) {
       console.error(e);
-      setError("Error validating Gemini key");
+      setError('Error validating Gemini key');
       setIsValid(false);
       return false;
     } finally {
@@ -61,7 +61,7 @@ export default function Gemini() {
 
   const handleCancel = () => {
     setTempKey(geminikey);
-    setError("");
+    setError('');
     setIsValid(!!geminikey);
   };
 
@@ -70,7 +70,7 @@ export default function Gemini() {
       <div className="flex flex-col space-y-4">
         <div className="space-y-2">
           <Label htmlFor="geminikey">
-            Gemini API Key (get it from{" "}
+            Gemini API Key (get it from{' '}
             <a
               href="https://ai.google.dev/gemini-api/docs/api-key"
               target="_blank"
@@ -87,7 +87,7 @@ export default function Gemini() {
             onChange={(e) => {
               setTempKey(e.target.value);
               setIsValid(false);
-              setError("");
+              setError('');
             }}
             placeholder="Enter your Gemini API key"
           />
@@ -122,7 +122,7 @@ export default function Gemini() {
                 Checking
               </>
             ) : (
-              "Check Key"
+              'Check Key'
             )}
           </Button>
         )}

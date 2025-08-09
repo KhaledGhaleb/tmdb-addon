@@ -1,5 +1,5 @@
-import axios from "axios";
-import { getMeta } from "../lib/getMeta.js";
+import axios from 'axios';
+import { getMeta } from '../lib/getMeta.js';
 
 async function fetchMDBListItems(listId, apiKey, language, page) {
   const offset = page * 20 - 20;
@@ -8,7 +8,7 @@ async function fetchMDBListItems(listId, apiKey, language, page) {
     const response = await axios.get(url);
     return [...(response.data.movies || []), ...(response.data.shows || [])];
   } catch (err) {
-    console.error("Error retrieving MDBList items:", err.message, err);
+    console.error('Error retrieving MDBList items:', err.message, err);
     return [];
   }
 }
@@ -21,16 +21,16 @@ async function getGenresFromMDBList(listId, apiKey) {
         items
           .flatMap((item) =>
             (item.genre || []).map((g) => {
-              if (!g || typeof g !== "string") return null;
+              if (!g || typeof g !== 'string') return null;
               return g.charAt(0).toUpperCase() + g.slice(1).toLowerCase();
-            }),
+            })
           )
-          .filter(Boolean),
+          .filter(Boolean)
       ),
     ].sort();
     return genres;
   } catch (err) {
-    console.error("ERROR in getGenresFromMDBList:", err);
+    console.error('ERROR in getGenresFromMDBList:', err);
     return [];
   }
 }
@@ -41,12 +41,12 @@ async function parseMDBListItems(items, type, genreFilter, language, rpdbkey) {
       items.flatMap((item) =>
         (item.genre || [])
           .map((g) =>
-            typeof g === "string"
+            typeof g === 'string'
               ? g.charAt(0).toUpperCase() + g.slice(1).toLowerCase()
-              : null,
+              : null
           )
-          .filter(Boolean),
-      ),
+          .filter(Boolean)
+      )
     ),
   ].sort();
 
@@ -57,16 +57,16 @@ async function parseMDBListItems(items, type, genreFilter, language, rpdbkey) {
         Array.isArray(item.genre) &&
         item.genre.some(
           (g) =>
-            typeof g === "string" &&
-            g.toLowerCase() === genreFilter.toLowerCase(),
-        ),
+            typeof g === 'string' &&
+            g.toLowerCase() === genreFilter.toLowerCase()
+        )
     );
   }
 
   const filteredItemsByType = filteredItems
     .filter((item) => {
-      if (type === "series") return item.mediatype === "show";
-      if (type === "movie") return item.mediatype === "movie";
+      if (type === 'series') return item.mediatype === 'show';
+      if (type === 'movie') return item.mediatype === 'movie';
       return false;
     })
     .map((item) => ({
@@ -80,7 +80,7 @@ async function parseMDBListItems(items, type, genreFilter, language, rpdbkey) {
       .catch((err) => {
         console.error(`Erro ao buscar metadados para ${item.id}:`, err.message);
         return null;
-      }),
+      })
   );
 
   const metas = (await Promise.all(metaPromises)).filter(Boolean);

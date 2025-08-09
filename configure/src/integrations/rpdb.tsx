@@ -1,16 +1,16 @@
-import { useState, useEffect } from "react";
-import { useConfig } from "@/contexts/use-config";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { DialogClose } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AlertCircle, Loader2 } from "lucide-react";
+import { useState, useEffect } from 'react';
+import { useConfig } from '@/contexts/use-config';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { DialogClose } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { AlertCircle, Loader2 } from 'lucide-react';
 
 export default function RPDB() {
   const { rpdbkey, setRpdbkey } = useConfig();
   const [tempKey, setTempKey] = useState(rpdbkey);
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
   const [isValid, setIsValid] = useState(false);
   const [isChecking, setIsChecking] = useState(false);
 
@@ -24,28 +24,28 @@ export default function RPDB() {
   const validateRPDBKey = async (key: string) => {
     if (!key) {
       setIsValid(false);
-      setError("");
+      setError('');
       return false;
     }
 
     setIsChecking(true);
     try {
       const response = await fetch(
-        `https://api.ratingposterdb.com/${key}/isValid`,
+        `https://api.ratingposterdb.com/${key}/isValid`
       );
       const data = await response.json();
 
       if (!(data || {}).valid) {
-        setError("RPDB Key is invalid, please try again");
+        setError('RPDB Key is invalid, please try again');
         setIsValid(false);
         return false;
       }
-      setError("");
+      setError('');
       setIsValid(true);
       return true;
     } catch (e) {
       console.error(e);
-      setError("Error validating RPDB key");
+      setError('Error validating RPDB key');
       setIsValid(false);
       return false;
     } finally {
@@ -61,7 +61,7 @@ export default function RPDB() {
 
   const handleCancel = () => {
     setTempKey(rpdbkey);
-    setError("");
+    setError('');
     setIsValid(rpdbkey ? true : false);
   };
 
@@ -70,7 +70,7 @@ export default function RPDB() {
       <div className="flex flex-col space-y-4">
         <div className="space-y-2">
           <Label htmlFor="rpdbkey">
-            RPDB API Key (get it from{" "}
+            RPDB API Key (get it from{' '}
             <a
               href="https://ratingposterdb.com/"
               target="_blank"
@@ -87,7 +87,7 @@ export default function RPDB() {
             onChange={(e) => {
               setTempKey(e.target.value);
               setIsValid(false);
-              setError("");
+              setError('');
             }}
             placeholder="Enter your RPDB API key"
           />
@@ -122,7 +122,7 @@ export default function RPDB() {
                 Checking
               </>
             ) : (
-              "Check Key"
+              'Check Key'
             )}
           </Button>
         )}

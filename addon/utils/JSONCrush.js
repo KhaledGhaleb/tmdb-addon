@@ -2,18 +2,18 @@
 // JSONCrush v1.1.6 by Frank Force - https://github.com/KilledByAPixel/JSONCrush
 /////////////////////////////////////////////////////////////////////////////////
 
-"use strict";
+'use strict';
 
 export default {
   crush: (string, maxSubstringLength = 50) => {
-    const delimiter = "\u0001"; // used to split parts of crushed string
+    const delimiter = '\u0001'; // used to split parts of crushed string
     const JSCrush = (string, replaceCharacters) => {
       // JSCrush Algorithm (repleace repeated substrings with single characters)
       let replaceCharacterPos = replaceCharacters.length;
-      let splitString = "";
+      let splitString = '';
 
       const ByteLength = (string) =>
-        encodeURI(encodeURIComponent(string)).replace(/%../g, "i").length;
+        encodeURI(encodeURIComponent(string)).replace(/%../g, 'i').length;
       const HasUnmatchedSurrogate = (string) => {
         // check ends of string for unmatched surrogate pairs
         let c1 = string.charCodeAt(0);
@@ -46,7 +46,7 @@ export default {
           )
             substringPos = string.indexOf(
               substring,
-              substringPos + substringLength,
+              substringPos + substringLength
             );
 
           // add to list if it appears multiple times
@@ -131,11 +131,11 @@ export default {
     // pick from extended set last
     for (let i = 32; i < 255; ++i) {
       let c = String.fromCharCode(i);
-      if (c != "\\" && !characters.includes(c)) characters.unshift(c);
+      if (c != '\\' && !characters.includes(c)) characters.unshift(c);
     }
 
     // remove delimiter if it is found in the string
-    string = string.replace(new RegExp(delimiter, "g"), "");
+    string = string.replace(new RegExp(delimiter, 'g'), '');
 
     // swap out common json characters
     string = JSONCrushSwap(string);
@@ -148,7 +148,7 @@ export default {
     if (crushed.b.length) crushedString += delimiter + crushed.b;
 
     // fix issues with some links not being recognized properly
-    crushedString += "_";
+    crushedString += '_';
 
     // return crushed string
     return crushedString;
@@ -159,7 +159,7 @@ export default {
     string = string.substring(0, string.length - 1);
 
     // unsplit the string using the delimiter
-    const stringParts = string.split("\u0001");
+    const stringParts = string.split('\u0001');
 
     // JSUncrush algorithm
     let uncrushedString = stringParts[0];
@@ -183,16 +183,16 @@ const JSONCrushSwap = (string, forward = 1) => {
   // swap out characters for lesser used ones that wont get escaped
   const swapGroups = [
     ['"', "'"],
-    ["':", "!"],
-    [",'", "~"],
-    ["}", ")", "\\", "\\"],
-    ["{", "(", "\\", "\\"],
+    ["':", '!'],
+    [",'", '~'],
+    ['}', ')', '\\', '\\'],
+    ['{', '(', '\\', '\\'],
   ];
 
   const swapInternal = (string, g) => {
     let regex = new RegExp(
-      `${(g[2] ? g[2] : "") + g[0]}|${(g[3] ? g[3] : "") + g[1]}`,
-      "g",
+      `${(g[2] ? g[2] : '') + g[0]}|${(g[3] ? g[3] : '') + g[1]}`,
+      'g'
     );
     return string.replace(regex, ($1) => ($1 === g[0] ? g[1] : g[0]));
   };

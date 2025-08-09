@@ -1,4 +1,4 @@
-import { createContext } from "react";
+import { createContext } from 'react';
 
 export type CatalogConfig = {
   id: string;
@@ -36,7 +36,7 @@ export type ConfigContextType = {
   setSessionId: (sessionId: string) => void;
   setStreaming: (streaming: string[]) => void;
   setCatalogs: (
-    catalogs: CatalogConfig[] | ((prev: CatalogConfig[]) => CatalogConfig[]),
+    catalogs: CatalogConfig[] | ((prev: CatalogConfig[]) => CatalogConfig[])
   ) => void;
   setAgeRating: (ageRating: string | undefined) => void;
   setSearchEnabled: (enabled: boolean) => void;
@@ -47,5 +47,5 @@ export type ConfigContextType = {
 };
 
 export const ConfigContext = createContext<ConfigContextType | undefined>(
-  undefined,
+  undefined
 );

@@ -1,25 +1,25 @@
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import Home from "./pages/Home";
-import Catalogs from "./pages/Catalogs";
-import Integrations from "./pages/Integrations";
-import Others from "./pages/Others";
-import NotFound from "./pages/NotFound";
-import { Sidebar } from "@/components/Sidebar";
-import { Header } from "@/components/Header";
-import { useState } from "react";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { ConfigProvider } from "@/contexts/ConfigContext";
+import { Toaster } from '@/components/ui/toaster';
+import { Toaster as Sonner } from '@/components/ui/sonner';
+import { TooltipProvider } from '@/components/ui/tooltip';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import Home from './pages/Home';
+import Catalogs from './pages/Catalogs';
+import Integrations from './pages/Integrations';
+import Others from './pages/Others';
+import NotFound from './pages/NotFound';
+import { Sidebar } from '@/components/Sidebar';
+import { Header } from '@/components/Header';
+import { useState } from 'react';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { ConfigProvider } from '@/contexts/ConfigContext';
 
 const queryClient = new QueryClient();
 
-type Page = "home" | "catalogs" | "integrations" | "others";
+type Page = 'home' | 'catalogs' | 'integrations' | 'others';
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [currentPage, setCurrentPage] = useState<Page>("home");
+  const [currentPage, setCurrentPage] = useState<Page>('home');
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
@@ -27,20 +27,20 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
   const renderPage = () => {
     switch (currentPage) {
-      case "home":
+      case 'home':
         return <Home />;
-      case "catalogs":
+      case 'catalogs':
         return <Catalogs />;
-      case "integrations":
+      case 'integrations':
         return <Integrations />;
-      case "others":
+      case 'others':
         return <Others />;
       default:
         return <NotFound />;
     }
   };
 
-  const isHome = currentPage === "home";
+  const isHome = currentPage === 'home';
 
   return (
     <div className="min-h-screen bg-gray-100">

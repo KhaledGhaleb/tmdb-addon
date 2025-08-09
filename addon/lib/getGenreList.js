@@ -1,9 +1,9 @@
-import { MovieDb } from "moviedb-promise";
-import "dotenv/config"; // same as require("dotenv").config();
+import { MovieDb } from 'moviedb-promise';
+import 'dotenv/config'; // same as require("dotenv").config();
 const moviedb = new MovieDb(process.env.TMDB_API);
 
 async function getGenreList(language, type) {
-  if (type === "movie") {
+  if (type === 'movie') {
     const genre = await moviedb
       .genreMovieList({ language })
       .then((res) => {

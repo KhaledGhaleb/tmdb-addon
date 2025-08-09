@@ -1,10 +1,10 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense } from 'react';
 import {
   DialogHeader,
   DialogTitle,
   DialogDescription,
-} from "@/components/ui/dialog";
-import { Skeleton } from "@/components/ui/skeleton";
+} from '@/components/ui/dialog';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface IntegrationDialogProps {
   id: string;
@@ -17,8 +17,8 @@ export function IntegrationDialog({ id, name, icon }: IntegrationDialogProps) {
     /* @vite-ignore */
     import(`../integrations/${id}.tsx`).catch(() => {
       console.error(`Failed to load integration component for ${id}`);
-      return import("./DefaultIntegration");
-    }),
+      return import('./DefaultIntegration');
+    })
   );
 
   return (

@@ -1,15 +1,15 @@
-import { useState } from "react";
-import { ChevronDown } from "lucide-react";
-import { useToast } from "@/components/ui/use-toast";
-import { Button } from "@/components/ui/button";
+import { useState } from 'react';
+import { ChevronDown } from 'lucide-react';
+import { useToast } from '@/components/ui/use-toast';
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { generateAddonUrl } from "@/lib/config";
-import { useConfig } from "@/contexts/use-config";
+} from '@/components/ui/dropdown-menu';
+import { generateAddonUrl } from '@/lib/config';
+import { useConfig } from '@/contexts/use-config';
 
 export function MultiActionButton() {
   const { toast } = useToast();
@@ -18,27 +18,27 @@ export function MultiActionButton() {
 
   const handleInstall = () => {
     const url = generateAddonUrl(config);
-    window.location.href = url.replace(/^https?:\/\//, "stremio://");
+    window.location.href = url.replace(/^https?:\/\//, 'stremio://');
   };
 
   const handleInstallWeb = () => {
     const addonUrl = generateAddonUrl(config);
     const webUrl = `https://web.stremio.com/#/addons?addon=${encodeURIComponent(addonUrl)}`;
-    window.open(webUrl, "_blank");
+    window.open(webUrl, '_blank');
   };
 
   const handleCopyUrl = async () => {
     await navigator.clipboard.writeText(generateAddonUrl(config));
     toast({
-      title: "URL Copied",
-      description: "The URL has been copied to your clipboard",
+      title: 'URL Copied',
+      description: 'The URL has been copied to your clipboard',
     });
   };
 
   const actions = [
-    { label: "Install", action: handleInstall },
-    { label: "Install Web", action: handleInstallWeb },
-    { label: "Copy URL", action: handleCopyUrl },
+    { label: 'Install', action: handleInstall },
+    { label: 'Install Web', action: handleInstallWeb },
+    { label: 'Copy URL', action: handleCopyUrl },
   ];
 
   const handleMainClick = () => {

@@ -1,4 +1,4 @@
-import { compressToEncodedURIComponent } from "lz-string";
+import { compressToEncodedURIComponent } from 'lz-string';
 
 interface AddonConfig {
   rpdbkey?: string;
@@ -39,22 +39,22 @@ export function generateAddonUrl(config: AddonConfig): string {
         name,
         showInHome,
       })),
-    includeAdult: config.includeAdult === true ? "true" : false,
-    provideImdbId: config.provideImdbId === true ? "true" : undefined,
-    tmdbPrefix: config.tmdbPrefix === true ? "true" : undefined,
+    includeAdult: config.includeAdult === true ? 'true' : false,
+    provideImdbId: config.provideImdbId === true ? 'true' : undefined,
+    tmdbPrefix: config.tmdbPrefix === true ? 'true' : undefined,
     hideEpisodeThumbnails:
-      config.hideEpisodeThumbnails === true ? "true" : undefined,
-    searchEnabled: config.searchEnabled === false ? "false" : undefined,
-    hideInCinemaTag: config.hideInCinemaTag === true ? "true" : undefined,
+      config.hideEpisodeThumbnails === true ? 'true' : undefined,
+    searchEnabled: config.searchEnabled === false ? 'false' : undefined,
+    hideInCinemaTag: config.hideInCinemaTag === true ? 'true' : undefined,
     castCount:
-      typeof config.castCount === "number" ? config.castCount : undefined,
-    numYears: typeof config.numYears === "number" ? config.numYears : 100,
+      typeof config.castCount === 'number' ? config.castCount : undefined,
+    numYears: typeof config.numYears === 'number' ? config.numYears : 100,
   };
 
   const cleanConfig = Object.fromEntries(
     Object.entries(configToEncode).filter(
-      ([_, value]) => value !== undefined && value !== null,
-    ),
+      ([_, value]) => value !== undefined && value !== null
+    )
   );
 
   const compressed = compressToEncodedURIComponent(JSON.stringify(cleanConfig));

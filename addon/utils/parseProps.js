@@ -1,9 +1,9 @@
-import lz from "lz-string";
-import urlExists from "url-exists";
+import lz from 'lz-string';
+import urlExists from 'url-exists';
 const { decompressFromEncodedURIComponent } = lz;
 function parseCertification(release_dates, language) {
   return release_dates.results.filter(
-    (releases) => releases.iso_3166_1 == language.split("-")[1],
+    (releases) => releases.iso_3166_1 == language.split('-')[1]
   )[0].release_dates[0].certification;
 }
 
@@ -32,7 +32,7 @@ function parseCast(credits, count) {
 
 function parseDirector(credits) {
   return credits.crew
-    .filter((x) => x.job === "Director")
+    .filter((x) => x.job === 'Director')
     .map((el) => {
       return el.name;
     });
@@ -40,22 +40,22 @@ function parseDirector(credits) {
 
 function parseWriter(credits) {
   return credits.crew
-    .filter((x) => x.job === "Writer")
+    .filter((x) => x.job === 'Writer')
     .map((el) => {
       return el.name;
     });
 }
 
 function parseSlug(type, title, imdb_id) {
-  return `${type}/${title.toLowerCase().replace(/ /g, "-")}-${
-    imdb_id ? imdb_id.replace("tt", "") : ""
+  return `${type}/${title.toLowerCase().replace(/ /g, '-')}-${
+    imdb_id ? imdb_id.replace('tt', '') : ''
   }`;
 }
 
 function parseTrailers(videos) {
   return videos.results
-    .filter((el) => el.site === "YouTube")
-    .filter((el) => el.type === "Trailer")
+    .filter((el) => el.site === 'YouTube')
+    .filter((el) => el.type === 'Trailer')
     .map((el) => {
       return {
         source: `${el.key}`,
@@ -66,8 +66,8 @@ function parseTrailers(videos) {
 
 function parseTrailerStream(videos) {
   return videos.results
-    .filter((el) => el.site === "YouTube")
-    .filter((el) => el.type === "Trailer")
+    .filter((el) => el.site === 'YouTube')
+    .filter((el) => el.type === 'Trailer')
     .map((el) => {
       return {
         title: `${el.name}`,
@@ -79,7 +79,7 @@ function parseTrailerStream(videos) {
 function parseImdbLink(vote_average, imdb_id) {
   return {
     name: vote_average,
-    category: "imdb",
+    category: 'imdb',
     url: `https://imdb.com/title/${imdb_id}`,
   };
 }
@@ -87,7 +87,7 @@ function parseImdbLink(vote_average, imdb_id) {
 function parseShareLink(title, imdb_id, type) {
   return {
     name: title,
-    category: "share",
+    category: 'share',
     url: `https://www.strem.io/s/${parseSlug(type, title, imdb_id)}`,
   };
 }
@@ -96,11 +96,11 @@ function parseGenreLink(genres, type, language) {
   return genres.map((genre) => {
     return {
       name: genre.name,
-      category: "Genres",
+      category: 'Genres',
       url: `stremio:///discover/${encodeURIComponent(
-        process.env.HOST_NAME,
+        process.env.HOST_NAME
       )}%2F${language}%2Fmanifest.json/${type}/tmdb.top?genre=${encodeURIComponent(
-        genre.name,
+        genre.name
       )}`,
     };
   });
@@ -111,21 +111,21 @@ function parseCreditsLink(credits, castCount) {
   const Cast = castData.map((actor) => {
     return {
       name: actor.name,
-      category: "Cast",
+      category: 'Cast',
       url: `stremio:///search?search=${encodeURIComponent(actor.name)}`,
     };
   });
   const Director = parseDirector(credits).map((director) => {
     return {
       name: director,
-      category: "Directors",
+      category: 'Directors',
       url: `stremio:///search?search=${encodeURIComponent(director)}`,
     };
   });
   const Writer = parseWriter(credits).map((writer) => {
     return {
       name: writer,
-      category: "Writers",
+      category: 'Writers',
       url: `stremio:///search?search=${encodeURIComponent(writer)}`,
     };
   });
@@ -133,7 +133,7 @@ function parseCreditsLink(credits, castCount) {
 }
 
 function parseCoutry(production_countries) {
-  return production_countries.map((country) => country.name).join(", ");
+  return production_countries.map((country) => country.name).join(', ');
 }
 
 function parseGenres(genres) {
@@ -143,18 +143,18 @@ function parseGenres(genres) {
 }
 
 function parseYear(status, first_air_date, last_air_date) {
-  if (status === "Ended") {
+  if (status === 'Ended') {
     return first_air_date && last_air_date
       ? first_air_date.substr(0, 5) + last_air_date.substr(0, 4)
-      : "";
+      : '';
   } else {
-    return first_air_date ? first_air_date.substr(0, 5) : "";
+    return first_air_date ? first_air_date.substr(0, 5) : '';
   }
 }
 
 function parseRunTime(runtime) {
   if (runtime === 0 || !runtime) {
-    return "";
+    return '';
   }
 
   const hours = Math.floor(runtime / 60);
@@ -207,34 +207,34 @@ async function parsePoster(type, id, poster, language, rpdbkey) {
 function parseMedia(el, type, genreList = []) {
   const genres = Array.isArray(el.genre_ids)
     ? el.genre_ids.map(
-        (genre) => genreList.find((x) => x.id === genre)?.name || "Unknown",
+        (genre) => genreList.find((x) => x.id === genre)?.name || 'Unknown'
       )
     : [];
 
   return {
     id: `tmdb:${el.id}`,
-    name: type === "movie" ? el.title : el.name,
+    name: type === 'movie' ? el.title : el.name,
     genre: genres,
     poster: `https://image.tmdb.org/t/p/w500${el.poster_path}`,
     background: `https://image.tmdb.org/t/p/original${el.backdrop_path}`,
-    posterShape: "regular",
-    imdbRating: el.vote_average ? el.vote_average.toFixed(1) : "N/A",
+    posterShape: 'regular',
+    imdbRating: el.vote_average ? el.vote_average.toFixed(1) : 'N/A',
     year:
-      type === "movie"
+      type === 'movie'
         ? el.release_date
           ? el.release_date.substr(0, 4)
-          : ""
+          : ''
         : el.first_air_date
           ? el.first_air_date.substr(0, 4)
-          : "",
-    type: type === "movie" ? type : "series",
+          : '',
+    type: type === 'movie' ? type : 'series',
     description: el.overview,
   };
 }
 function getRpdbPoster(type, id, language, rpdbkey) {
-  const tier = rpdbkey.split("-")[0];
-  const lang = language.split("-")[0];
-  if (tier === "t0" || tier === "t1" || lang === "en") {
+  const tier = rpdbkey.split('-')[0];
+  const lang = language.split('-')[0];
+  if (tier === 't0' || tier === 't1' || lang === 'en') {
     return `https://api.ratingposterdb.com/${rpdbkey}/tmdb/poster-default/${type}-${id}.jpg?fallback=true`;
   } else {
     return `https://api.ratingposterdb.com/${rpdbkey}/tmdb/poster-default/${type}-${id}.jpg?fallback=true&lang=${lang}`;

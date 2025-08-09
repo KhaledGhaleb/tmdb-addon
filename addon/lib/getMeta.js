@@ -1,19 +1,19 @@
 // addon/lib/getMeta.js (ESM)
 
-import "dotenv/config";
-import { MovieDb } from "moviedb-promise";
-import { getEpisodes } from "./getEpisodes.js";
-import * as Utils from "../utils/parseProps.js";
-import { getLogo, getTvLogo } from "./getLogo.js";
-import { getImdbRating } from "./getImdbRating.js";
-import { checkSeasonsAndReport } from "../utils/checkSeasons.js";
+import 'dotenv/config';
+import { MovieDb } from 'moviedb-promise';
+import { getEpisodes } from './getEpisodes.js';
+import * as Utils from '../utils/parseProps.js';
+import { getLogo, getTvLogo } from './getLogo.js';
+import { getImdbRating } from './getImdbRating.js';
+import { checkSeasonsAndReport } from '../utils/checkSeasons.js';
 
 const moviedb = new MovieDb(process.env.TMDB_API);
 
 // Configuration
 const CACHE_TTL = 1000 * 60 * 60; // 1 hour
 const blacklistLogoUrls = [
-  "https://assets.fanart.tv/fanart/tv/0/hdtvlogo/-60a02798b7eea.png",
+  'https://assets.fanart.tv/fanart/tv/0/hdtvlogo/-60a02798b7eea.png',
 ];
 
 // Cache
@@ -38,7 +38,7 @@ const getCacheKey = (type, language, tmdbId, rpdbkey) =>
 
 const processLogo = (logo) => {
   if (!logo || blacklistLogoUrls.includes(logo)) return null;
-  return logo.replace("http://", "https://");
+  return logo.replace('http://', 'https://');
 };
 
 const buildLinks = (
@@ -49,7 +49,7 @@ const buildLinks = (
   genres,
   credits,
   language,
-  castCount,
+  castCount
 ) => [
   Utils.parseImdbLink(imdbRating, imdbId),
   Utils.parseShareLink(title, imdbId, type),
@@ -62,7 +62,7 @@ const fetchMovieData = async (tmdbId, language) => {
   return await moviedb.movieInfo({
     id: tmdbId,
     language,
-    append_to_response: "videos,credits,external_ids",
+    append_to_response: 'videos,credits,external_ids',
   });
 };
 
@@ -72,7 +72,7 @@ const buildMovieResponse = async (
   language,
   tmdbId,
   rpdbkey,
-  config = {},
+  config = {}
 ) => {
   const [poster, logo, imdbRatingRaw] = await Promise.all([
     Utils.parsePoster(type, tmdbId, res.poster_path, language, rpdbkey),
@@ -83,13 +83,13 @@ const buildMovieResponse = async (
     getCachedImdbRating(res.external_ids?.imdb_id, type),
   ]);
 
-  const imdbRating = imdbRatingRaw || res.vote_average?.toFixed(1) || "N/A";
+  const imdbRating = imdbRatingRaw || res.vote_average?.toFixed(1) || 'N/A';
   const castCount =
     config.castCount !== undefined
       ? Math.max(1, Math.min(5, Number(config.castCount)))
       : 5;
   const hideInCinemaTag =
-    config.hideInCinemaTag === true || config.hideInCinemaTag === "true";
+    config.hideInCinemaTag === true || config.hideInCinemaTag === 'true';
 
   const response = {
     imdb_id: res.imdb_id,
@@ -103,14 +103,14 @@ const buildMovieResponse = async (
     slug: Utils.parseSlug(type, res.title, res.imdb_id),
     type,
     writer: Utils.parseWriter(res.credits),
-    year: res.release_date ? res.release_date.substr(0, 4) : "",
+    year: res.release_date ? res.release_date.substr(0, 4) : '',
     trailers: Utils.parseTrailers(res.videos),
     background: `https://image.tmdb.org/t/p/original${res.backdrop_path}`,
     poster,
     runtime: Utils.parseRunTime(res.runtime),
     id: `tmdb:${tmdbId}`,
     genres: Utils.parseGenres(res.genres),
-    releaseInfo: res.release_date ? res.release_date.substr(0, 4) : "",
+    releaseInfo: res.release_date ? res.release_date.substr(0, 4) : '',
     trailerStreams: Utils.parseTrailerStream(res.videos),
     links: buildLinks(
       imdbRating,
@@ -120,7 +120,7 @@ const buildMovieResponse = async (
       res.genres,
       res.credits,
       language,
-      castCount,
+      castCount
     ),
     behaviorHints: {
       defaultVideoId: res.imdb_id ? res.imdb_id : `tmdb:${res.id}`,
@@ -140,7 +140,7 @@ const fetchTvData = async (tmdbId, language) => {
   return await moviedb.tvInfo({
     id: tmdbId,
     language,
-    append_to_response: "videos,credits,external_ids",
+    append_to_response: 'videos,credits,external_ids',
   });
 };
 
@@ -150,7 +150,7 @@ const buildTvResponse = async (
   language,
   tmdbId,
   rpdbkey,
-  config = {},
+  config = {}
 ) => {
   const runtime =
     res.episode_run_time?.[0] ??
@@ -164,7 +164,7 @@ const buildTvResponse = async (
       res.external_ids?.tvdb_id,
       res.id,
       language,
-      res.original_language,
+      res.original_language
     ).catch((e) => {
       console.warn(`Erro ao buscar logo para série ${tmdbId}:`, e.message);
       return null;
@@ -178,13 +178,13 @@ const buildTvResponse = async (
     }),
   ]);
 
-  const imdbRating = imdbRatingRaw || res.vote_average?.toFixed(1) || "N/A";
+  const imdbRating = imdbRatingRaw || res.vote_average?.toFixed(1) || 'N/A';
   const castCount =
     config.castCount !== undefined
       ? Math.max(1, Math.min(5, Number(config.castCount)))
       : 5;
   const hideInCinemaTag =
-    config.hideInCinemaTag === true || config.hideInCinemaTag === "true";
+    config.hideInCinemaTag === true || config.hideInCinemaTag === 'true';
 
   const response = {
     country: Utils.parseCoutry(res.production_countries),
@@ -207,7 +207,7 @@ const buildTvResponse = async (
     releaseInfo: Utils.parseYear(
       res.status,
       res.first_air_date,
-      res.last_air_date,
+      res.last_air_date
     ),
     videos: episodes || [],
     links: buildLinks(
@@ -218,7 +218,7 @@ const buildTvResponse = async (
       res.genres,
       res.credits,
       language,
-      castCount,
+      castCount
     ),
     trailers: Utils.parseTrailers(res.videos),
     trailerStreams: Utils.parseTrailerStream(res.videos),
@@ -240,7 +240,7 @@ const buildTvResponse = async (
       tmdbId,
       response.imdb_id,
       { meta: response },
-      response.name,
+      response.name
     );
   }
 
@@ -257,12 +257,12 @@ async function getMeta(type, language, tmdbId, rpdbkey, config = {}) {
   }
 
   try {
-    const meta = await (type === "movie"
+    const meta = await (type === 'movie'
       ? fetchMovieData(tmdbId, language).then((res) =>
-          buildMovieResponse(res, type, language, tmdbId, rpdbkey, config),
+          buildMovieResponse(res, type, language, tmdbId, rpdbkey, config)
         )
       : fetchTvData(tmdbId, language).then((res) =>
-          buildTvResponse(res, type, language, tmdbId, rpdbkey, config),
+          buildTvResponse(res, type, language, tmdbId, rpdbkey, config)
         ));
 
     cache.set(cacheKey, { data: meta, timestamp: Date.now() });

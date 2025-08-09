@@ -3,11 +3,11 @@ name: Deploy Docker image to GitHub Container Registry and Docker Hub
 on:
   push:
     tags:
-      - "v*" # Trigger on any tag that starts with 'v'
+      - 'v*' # Trigger on any tag that starts with 'v'
   workflow_dispatch:
     inputs:
       tag:
-        description: "Tag for the Docker image (e.g., v1.0.0)"
+        description: 'Tag for the Docker image (e.g., v1.0.0)'
         required: true
 
 jobs:

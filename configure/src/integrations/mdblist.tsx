@@ -25,7 +25,7 @@ export default function MDBListIntegration() {
       setIsChecking(true);
       try {
         const response = await fetch(
-          `https://api.mdblist.com/lists/user?apikey=${key}`
+          `https://api.mdblist.com/lists/user?apikey=${key}`,
         );
         if (!response.ok) {
           throw new Error("Failed to fetch lists");
@@ -49,7 +49,8 @@ export default function MDBListIntegration() {
         setIsValid(true);
         return true;
       } catch (error) {
-        const message = (error as Error).message || "Failed to validate API key";
+        const message =
+          (error as Error).message || "Failed to validate API key";
         toast({
           title: "Failed to validate API key",
           description: message,
@@ -60,7 +61,7 @@ export default function MDBListIntegration() {
         setIsChecking(false);
       }
     },
-    [catalogs, setCatalogs]
+    [catalogs, setCatalogs],
   );
 
   const handleSave = () => {
@@ -77,13 +78,13 @@ export default function MDBListIntegration() {
   const handleAddCustomList = async () => {
     try {
       const path = new URL(customListUrl).pathname;
-      const listName = path.replace('/lists/', '');
+      const listName = path.replace("/lists/", "");
       if (!listName) {
         throw new Error("Invalid URL");
       }
 
       const response = await fetch(
-        `https://api.mdblist.com/lists/${listName}?apikey=${tempKey}`
+        `https://api.mdblist.com/lists/${listName}?apikey=${tempKey}`,
       );
       if (!response.ok) {
         throw new Error("Error fetching list");

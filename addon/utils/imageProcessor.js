@@ -1,21 +1,19 @@
-const sharp = require('sharp');
-const axios = require('axios');
+const sharp = require("sharp");
+const axios = require("axios");
 
 async function blurImage(imageUrl) {
   try {
     const response = await axios.get(imageUrl, {
-      responseType: 'arraybuffer'
+      responseType: "arraybuffer",
     });
 
-    const processedImageBuffer = await sharp(response.data)
-      .blur(20)
-      .toBuffer();
+    const processedImageBuffer = await sharp(response.data).blur(20).toBuffer();
 
     return processedImageBuffer;
   } catch (error) {
-    console.error('Erro ao processar imagem:', error);
+    console.error("Erro ao processar imagem:", error);
     return null;
   }
 }
 
-module.exports = { blurImage }; 
+module.exports = { blurImage };

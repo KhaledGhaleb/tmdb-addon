@@ -22,7 +22,8 @@ export const integrations: Integration[] = [
     id: "streaming",
     name: "Streaming Catalogs",
     icon: "https://www.svgrepo.com/show/303341/netflix-1-logo.svg",
-    description: "Set up your streaming services to see content availability. Based on rleroi/Stremio-Streaming-Catalogs-Addon.",
+    description:
+      "Set up your streaming services to see content availability. Based on rleroi/Stremio-Streaming-Catalogs-Addon.",
   },
   {
     id: "mdblist",
@@ -30,16 +31,17 @@ export const integrations: Integration[] = [
     icon: "https://mdblist.com/static/mdblist.png",
     description: "Integrate your MDBList lists to expand your content library.",
   },
-    {
+  {
     id: "gemini",
     name: "Gemini AI Search",
     icon: "https://www.shutterstock.com/image-vector/simple-ai-search-icon-can-600nw-2483540907.jpg",
-    description: "Improve your searches using Google Gemini's artificial intelligence.",
+    description:
+      "Improve your searches using Google Gemini's artificial intelligence.",
   },
   {
     id: "trakt",
     name: "Trakt",
     icon: "https://trakt.tv/assets/logos/logomark.square.gradient-b644b16c38ff775861b4b1f58c1230f6a097a2466ab33ae00445a505c33fcb91.svg",
     description: "Track what you watch and sync your progress with Trakt.tv.",
-  }
-]; 
+  },
+];

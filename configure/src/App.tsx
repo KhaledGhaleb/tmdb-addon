@@ -44,15 +44,19 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      <Sidebar 
-        isOpen={isOpen} 
-        setIsOpen={setIsOpen} 
+      <Sidebar
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}
       />
       <div className="flex-1 flex flex-col md:pl-64 h-screen">
         {(!isHome || window.innerWidth < 768) && (
-          <Header isOpen={isOpen} toggleSidebar={toggleSidebar} isHome={isHome} />
+          <Header
+            isOpen={isOpen}
+            toggleSidebar={toggleSidebar}
+            isHome={isHome}
+          />
         )}
         <ScrollArea className="flex-1 px-4 sm:px-6 md:px-8 lg:px-12">
           {renderPage()}

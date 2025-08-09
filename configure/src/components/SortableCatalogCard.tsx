@@ -18,17 +18,24 @@ interface SortableCatalogCardProps {
 
 const getIntegrationInfo = (catalogId: string) => {
   const [integrationId] = catalogId.split(".");
-  const integration = integrations.find(i => i.id === integrationId);
-  
-  return integration || { 
-    id: integrationId,
-    name: integrationId.toUpperCase(),
-    icon: "/default.svg",
-    description: "Unknown integration"
-  };
+  const integration = integrations.find((i) => i.id === integrationId);
+
+  return (
+    integration || {
+      id: integrationId,
+      name: integrationId.toUpperCase(),
+      icon: "/default.svg",
+      description: "Unknown integration",
+    }
+  );
 };
 
-export function SortableCatalogCard({ catalog, config, onChange, id }: SortableCatalogCardProps) {
+export function SortableCatalogCard({
+  catalog,
+  config,
+  onChange,
+  id,
+}: SortableCatalogCardProps) {
   const {
     attributes,
     listeners,
@@ -50,8 +57,11 @@ export function SortableCatalogCard({ catalog, config, onChange, id }: SortableC
 
   if (integration.id === "streaming") {
     const streamindId = catalog.id.split(".")[1];
-    const foundService = streamingServices.find(s => s.id === streamindId);
-    integration = { ...integration, icon: foundService?.icon || integration.icon };
+    const foundService = streamingServices.find((s) => s.id === streamindId);
+    integration = {
+      ...integration,
+      icon: foundService?.icon || integration.icon,
+    };
   }
 
   return (
@@ -68,9 +78,9 @@ export function SortableCatalogCard({ catalog, config, onChange, id }: SortableC
                 <GripVertical className="h-5 w-5 text-gray-500" />
               </button>
               <div className="w-8 h-8 flex items-center justify-center bg-gray-50 rounded-md">
-                <img 
-                  src={integration.icon} 
-                  alt={`${integration.name} logo`} 
+                <img
+                  src={integration.icon}
+                  alt={`${integration.name} logo`}
                   className="w-full h-full object-contain rounded-md"
                 />
               </div>
@@ -85,9 +95,13 @@ export function SortableCatalogCard({ catalog, config, onChange, id }: SortableC
               <span className="text-sm text-muted-foreground">Enable</span>
               <Switch
                 checked={isEnabled}
-                onCheckedChange={(checked) => onChange(checked, checked ? showInHome : false)}
+                onCheckedChange={(checked) =>
+                  onChange(checked, checked ? showInHome : false)
+                }
               />
-              <span className={`text-sm ${!isEnabled ? "text-muted-foreground/50" : "text-muted-foreground"}`}>
+              <span
+                className={`text-sm ${!isEnabled ? "text-muted-foreground/50" : "text-muted-foreground"}`}
+              >
                 Home
               </span>
               <Switch

@@ -1,9 +1,9 @@
 const urlExists = require("url-exists");
-const { decompressFromEncodedURIComponent } = require('lz-string');
+const { decompressFromEncodedURIComponent } = require("lz-string");
 
 function parseCertification(release_dates, language) {
   return release_dates.results.filter(
-    (releases) => releases.iso_3166_1 == language.split("-")[1]
+    (releases) => releases.iso_3166_1 == language.split("-")[1],
   )[0].release_dates[0].certification;
 }
 
@@ -13,7 +13,9 @@ function parseCast(credits, count) {
       return {
         name: el.name,
         character: el.character,
-        photo: el.profile_path ? `https://image.tmdb.org/t/p/w276_and_h350_face${el.profile_path}` : null
+        photo: el.profile_path
+          ? `https://image.tmdb.org/t/p/w276_and_h350_face${el.profile_path}`
+          : null,
       };
     });
   }
@@ -21,7 +23,9 @@ function parseCast(credits, count) {
     return {
       name: el.name,
       character: el.character,
-      photo: el.profile_path ? `https://image.tmdb.org/t/p/w276_and_h350_face${el.profile_path}` : null
+      photo: el.profile_path
+        ? `https://image.tmdb.org/t/p/w276_and_h350_face${el.profile_path}`
+        : null,
     };
   });
 }
@@ -43,8 +47,9 @@ function parseWriter(credits) {
 }
 
 function parseSlug(type, title, imdb_id) {
-  return `${type}/${title.toLowerCase().replace(/ /g, "-")}-${imdb_id ? imdb_id.replace("tt", "") : ""
-    }`;
+  return `${type}/${title.toLowerCase().replace(/ /g, "-")}-${
+    imdb_id ? imdb_id.replace("tt", "") : ""
+  }`;
 }
 
 function parseTrailers(videos) {
@@ -93,9 +98,9 @@ function parseGenreLink(genres, type, language) {
       name: genre.name,
       category: "Genres",
       url: `stremio:///discover/${encodeURIComponent(
-        process.env.HOST_NAME
+        process.env.HOST_NAME,
       )}%2F${language}%2Fmanifest.json/${type}/tmdb.top?genre=${encodeURIComponent(
-        genre.name
+        genre.name,
       )}`,
     };
   });
@@ -107,7 +112,7 @@ function parseCreditsLink(credits, castCount) {
     return {
       name: actor.name,
       category: "Cast",
-      url: `stremio:///search?search=${encodeURIComponent(actor.name)}`
+      url: `stremio:///search?search=${encodeURIComponent(actor.name)}`,
     };
   });
   const Director = parseDirector(credits).map((director) => {
@@ -151,7 +156,7 @@ function parseRunTime(runtime) {
   if (runtime === 0 || !runtime) {
     return "";
   }
-  
+
   const hours = Math.floor(runtime / 60);
   const minutes = runtime % 60;
 
@@ -168,12 +173,12 @@ function parseCreatedBy(created_by) {
 
 function parseConfig(catalogChoices) {
   let config = {};
-  
+
   // Se catalogChoices for null, undefined ou vazio, retorna objeto vazio
   if (!catalogChoices) {
     return config;
   }
-  
+
   try {
     // Tenta descomprimir com lz-string
     const decoded = decompressFromEncodedURIComponent(catalogChoices);
@@ -191,39 +196,48 @@ function parseConfig(catalogChoices) {
 }
 
 async function parsePoster(type, id, poster, language, rpdbkey) {
-  const tmdbImage = `https://image.tmdb.org/t/p/w500${poster}`
+  const tmdbImage = `https://image.tmdb.org/t/p/w500${poster}`;
   if (rpdbkey) {
-    const rpdbImage = getRpdbPoster(type, id, language, rpdbkey)
-    return await checkIfExists(rpdbImage) ? rpdbImage : tmdbImage;
+    const rpdbImage = getRpdbPoster(type, id, language, rpdbkey);
+    return (await checkIfExists(rpdbImage)) ? rpdbImage : tmdbImage;
   }
   return tmdbImage;
 }
 
 function parseMedia(el, type, genreList = []) {
-  const genres = Array.isArray(el.genre_ids) 
-    ? el.genre_ids.map(genre => genreList.find((x) => x.id === genre)?.name || 'Unknown')
+  const genres = Array.isArray(el.genre_ids)
+    ? el.genre_ids.map(
+        (genre) => genreList.find((x) => x.id === genre)?.name || "Unknown",
+      )
     : [];
 
   return {
     id: `tmdb:${el.id}`,
-    name: type === 'movie' ? el.title : el.name,
+    name: type === "movie" ? el.title : el.name,
     genre: genres,
     poster: `https://image.tmdb.org/t/p/w500${el.poster_path}`,
     background: `https://image.tmdb.org/t/p/original${el.backdrop_path}`,
     posterShape: "regular",
-    imdbRating: el.vote_average ? el.vote_average.toFixed(1) : 'N/A',
-    year: type === 'movie' ? (el.release_date ? el.release_date.substr(0, 4) : "") : (el.first_air_date ? el.first_air_date.substr(0, 4) : ""),
-    type: type === 'movie' ? type : 'series',
+    imdbRating: el.vote_average ? el.vote_average.toFixed(1) : "N/A",
+    year:
+      type === "movie"
+        ? el.release_date
+          ? el.release_date.substr(0, 4)
+          : ""
+        : el.first_air_date
+          ? el.first_air_date.substr(0, 4)
+          : "",
+    type: type === "movie" ? type : "series",
     description: el.overview,
   };
 }
 function getRpdbPoster(type, id, language, rpdbkey) {
-  const tier = rpdbkey.split("-")[0]
-  const lang = language.split("-")[0]
+  const tier = rpdbkey.split("-")[0];
+  const lang = language.split("-")[0];
   if (tier === "t0" || tier === "t1" || lang === "en") {
-    return `https://api.ratingposterdb.com/${rpdbkey}/tmdb/poster-default/${type}-${id}.jpg?fallback=true`
+    return `https://api.ratingposterdb.com/${rpdbkey}/tmdb/poster-default/${type}-${id}.jpg?fallback=true`;
   } else {
-    return `https://api.ratingposterdb.com/${rpdbkey}/tmdb/poster-default/${type}-${id}.jpg?fallback=true&lang=${lang}`
+    return `https://api.ratingposterdb.com/${rpdbkey}/tmdb/poster-default/${type}-${id}.jpg?fallback=true&lang=${lang}`;
   }
 }
 
@@ -231,11 +245,11 @@ async function checkIfExists(rpdbImage) {
   return new Promise((resolve) => {
     urlExists(rpdbImage, (err, exists) => {
       if (exists) {
-        resolve(true)
+        resolve(true);
       } else {
         resolve(false);
       }
-    })
+    });
   });
 }
 
@@ -260,5 +274,5 @@ module.exports = {
   parsePoster,
   parseMedia,
   getRpdbPoster,
-  checkIfExists
+  checkIfExists,
 };

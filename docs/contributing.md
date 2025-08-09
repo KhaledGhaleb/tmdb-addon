@@ -44,9 +44,11 @@ By participating in this project, you agree to abide by our Code of Conduct. Ple
    npm run lint
    ```
 5. Commit your changes:
+
    ```bash
    git commit -m "feat: add some feature"
    ```
+
    We use [Conventional Commits](https://www.conventionalcommits.org/) specification.
 
 6. Push to your fork:
@@ -69,6 +71,7 @@ We follow the Conventional Commits specification:
 - `chore:` - Changes to build process or auxiliary tools
 
 Example:
+
 ```
 feat: add support for custom catalogs
 
@@ -125,8 +128,9 @@ feat: add support for custom catalogs
 ## Recognition
 
 Contributors will be recognized in:
+
 - The project's README
 - Release notes
 - Our contributors page
 
-Thank you for contributing to TMDB Addon! 
+Thank you for contributing to TMDB Addon!

@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { ChevronDown } from 'lucide-react';
+import { useState } from "react";
+import { ChevronDown } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
 import {
@@ -34,11 +34,11 @@ export function MultiActionButton() {
       description: "The URL has been copied to your clipboard",
     });
   };
-  
+
   const actions = [
-    { label: 'Install', action: handleInstall },
-    { label: 'Install Web', action: handleInstallWeb },
-    { label: 'Copy URL', action: handleCopyUrl }
+    { label: "Install", action: handleInstall },
+    { label: "Install Web", action: handleInstallWeb },
+    { label: "Copy URL", action: handleCopyUrl },
   ];
 
   const handleMainClick = () => {

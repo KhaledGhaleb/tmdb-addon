@@ -1,5 +1,9 @@
 import { lazy, Suspense } from "react";
-import { DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import {
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 import { Skeleton } from "@/components/ui/skeleton";
 
 interface IntegrationDialogProps {
@@ -9,12 +13,12 @@ interface IntegrationDialogProps {
 }
 
 export function IntegrationDialog({ id, name, icon }: IntegrationDialogProps) {
-  const IntegrationComponent = lazy(() => 
+  const IntegrationComponent = lazy(() =>
     /* @vite-ignore */
     import(`../integrations/${id}.tsx`).catch(() => {
       console.error(`Failed to load integration component for ${id}`);
       return import("./DefaultIntegration");
-    })
+    }),
   );
 
   return (
@@ -28,7 +32,7 @@ export function IntegrationDialog({ id, name, icon }: IntegrationDialogProps) {
           Configure your {name} integration settings below.
         </DialogDescription>
       </DialogHeader>
-      
+
       <div className="grid gap-3 sm:gap-4">
         <Suspense fallback={<Skeleton className="h-[200px] w-full" />}>
           <IntegrationComponent />
@@ -36,4 +40,4 @@ export function IntegrationDialog({ id, name, icon }: IntegrationDialogProps) {
       </div>
     </>
   );
-} 
+}

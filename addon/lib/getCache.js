@@ -1,8 +1,8 @@
-const cacheManager = require('cache-manager');
-const redisStore = require('cache-manager-ioredis');
-const Redis = require('ioredis');
+const cacheManager = require("cache-manager");
+const redisStore = require("cache-manager-ioredis");
+const Redis = require("ioredis");
 
-const GLOBAL_KEY_PREFIX = 'tmdb-addon';
+const GLOBAL_KEY_PREFIX = "tmdb-addon";
 const META_KEY_PREFIX = `${GLOBAL_KEY_PREFIX}|meta`;
 const CATALOG_KEY_PREFIX = `${GLOBAL_KEY_PREFIX}|catalog`;
 
@@ -22,12 +22,12 @@ function initiateCache() {
     return cacheManager.caching({
       store: redisStore,
       redisInstance: redisInstance,
-      ttl: META_TTL
+      ttl: META_TTL,
     });
   } else {
     return cacheManager.caching({
-      store: 'memory',
-      ttl: META_TTL
+      store: "memory",
+      ttl: META_TTL,
     });
   }
 }

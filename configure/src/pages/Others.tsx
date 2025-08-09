@@ -33,12 +33,17 @@ const Others = () => {
         </Card>
         <Card className="flex flex-row items-center justify-between p-6">
           <div className="space-y-0.5">
-            <label className="text-sm font-semibold mb-1">Hide Episode Thumbnails</label>
+            <label className="text-sm font-semibold mb-1">
+              Hide Episode Thumbnails
+            </label>
             <p className="text-gray-500 text-sm">
               Avoid spoilers by hiding episode preview images
             </p>
           </div>
-          <Switch checked={hideEpisodeThumbnails} onCheckedChange={setHideEpisodeThumbnails} />
+          <Switch
+            checked={hideEpisodeThumbnails}
+            onCheckedChange={setHideEpisodeThumbnails}
+          />
         </Card>
         <Card className="flex flex-row items-center justify-between p-4 sm:p-6 hover:shadow-lg transition-shadow cursor-pointer">
           <div className="space-y-0.5">
@@ -50,7 +55,10 @@ const Others = () => {
               addons.
             </p>
           </div>
-          <Switch checked={provideImdbId} onCheckedChange={() => setProvideImdbId(!provideImdbId)} />
+          <Switch
+            checked={provideImdbId}
+            onCheckedChange={() => setProvideImdbId(!provideImdbId)}
+          />
         </Card>
         <Card className="flex flex-row items-center justify-between p-4 sm:p-6 hover:shadow-lg transition-shadow cursor-pointer">
           <div className="space-y-0.5">
@@ -59,7 +67,10 @@ const Others = () => {
               Add "TMDB -" prefix to all catalog names for better organization.
             </p>
           </div>
-          <Switch checked={tmdbPrefix} onCheckedChange={() => setTmdbPrefix(!tmdbPrefix)} />
+          <Switch
+            checked={tmdbPrefix}
+            onCheckedChange={() => setTmdbPrefix(!tmdbPrefix)}
+          />
         </Card>
         <Card className="flex flex-row items-center justify-between p-6">
           <div className="space-y-0.5">
@@ -68,19 +79,23 @@ const Others = () => {
               Hide the 'In Cinema' tag from posters
             </p>
           </div>
-          <Switch checked={hideInCinemaTag} onCheckedChange={setHideInCinemaTag} />
+          <Switch
+            checked={hideInCinemaTag}
+            onCheckedChange={setHideInCinemaTag}
+          />
         </Card>
         <Card className="flex flex-row items-center justify-between p-6">
           <div className="space-y-0.5">
             <h1 className="text-sm font-semibold mb-1">Cast count to show</h1>
             <p className="text-gray-500 text-sm">
-              Number of cast members to display (minimum 5, maximum 15, or Unlimited)
+              Number of cast members to display (minimum 5, maximum 15, or
+              Unlimited)
             </p>
           </div>
           <select
             className="border rounded px-2 py-1 text-sm"
             value={castCount === undefined ? "Unlimited" : castCount}
-            onChange={e => {
+            onChange={(e) => {
               const value = e.target.value;
               setCastCount(value === "Unlimited" ? undefined : Number(value));
             }}

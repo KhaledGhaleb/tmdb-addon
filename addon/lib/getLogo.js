@@ -1,4 +1,4 @@
-require('dotenv').config();
+require("dotenv").config();
 const FanartTvApi = require("fanart.tv-api");
 const apiKey = process.env.FANART_API;
 const baseUrl = "http://webservice.fanart.tv/v3/";
@@ -11,9 +11,9 @@ function pickLogo(logos, language, originalLanguage) {
   const lang = language.split("-")[0];
 
   return (
-    logos.find(l => l.lang === lang) ||
-    logos.find(l => l.lang === originalLanguage) ||
-    logos.find(l => l.lang === "en") ||
+    logos.find((l) => l.lang === lang) ||
+    logos.find((l) => l.lang === originalLanguage) ||
+    logos.find((l) => l.lang === "en") ||
     logos[0]
   );
 }
@@ -26,33 +26,33 @@ async function getLogo(tmdbId, language, originalLanguage) {
   const [fanartRes, tmdbRes] = await Promise.all([
     fanart
       .getMovieImages(tmdbId)
-      .then(res => res.hdmovielogo || [])
+      .then((res) => res.hdmovielogo || [])
       .catch(() => []),
 
     moviedb
       .movieImages({ id: tmdbId })
-      .then(res => res.logos || [])
-      .catch(() => [])
+      .then((res) => res.logos || [])
+      .catch(() => []),
   ]);
 
-  const fanartLogos = fanartRes.map(l => ({
+  const fanartLogos = fanartRes.map((l) => ({
     url: l.url,
-    lang: l.lang || 'en',
-    source: 'fanart'
+    lang: l.lang || "en",
+    source: "fanart",
   }));
 
-  const tmdbLogos = tmdbRes.map(l => ({
+  const tmdbLogos = tmdbRes.map((l) => ({
     url: `https://image.tmdb.org/t/p/original${l.file_path}`,
-    lang: l.iso_639_1 || 'en',
-    source: 'tmdb'
+    lang: l.iso_639_1 || "en",
+    source: "tmdb",
   }));
 
   const combined = [...fanartLogos, ...tmdbLogos];
 
-  if (combined.length === 0) return '';
+  if (combined.length === 0) return "";
 
   const picked = pickLogo(combined, language, originalLanguage);
-  return picked?.url || '';
+  return picked?.url || "";
 }
 
 async function getTvLogo(tvdb_id, tmdbId, language, originalLanguage) {
@@ -64,36 +64,36 @@ async function getTvLogo(tvdb_id, tmdbId, language, originalLanguage) {
     tvdb_id
       ? fanart
           .getShowImages(tvdb_id)
-          .then(res => res.hdtvlogo || [])
+          .then((res) => res.hdtvlogo || [])
           .catch(() => [])
       : Promise.resolve([]),
 
     tmdbId
       ? moviedb
           .tvImages({ id: tmdbId })
-          .then(res => res.logos || [])
+          .then((res) => res.logos || [])
           .catch(() => [])
-      : Promise.resolve([])
+      : Promise.resolve([]),
   ]);
 
-  const fanartLogos = fanartRes.map(l => ({
+  const fanartLogos = fanartRes.map((l) => ({
     url: l.url,
-    lang: l.lang || 'en',
-    source: 'fanart'
+    lang: l.lang || "en",
+    source: "fanart",
   }));
 
-  const tmdbLogos = tmdbRes.map(l => ({
+  const tmdbLogos = tmdbRes.map((l) => ({
     url: `https://image.tmdb.org/t/p/original${l.file_path}`,
-    lang: l.iso_639_1 || 'en',
-    source: 'tmdb'
+    lang: l.iso_639_1 || "en",
+    source: "tmdb",
   }));
 
   const combined = [...fanartLogos, ...tmdbLogos];
 
-  if (combined.length === 0) return '';
+  if (combined.length === 0) return "";
 
   const picked = pickLogo(combined, language, originalLanguage);
-  return picked?.url || '';
+  return picked?.url || "";
 }
 
 module.exports = { getLogo, getTvLogo };

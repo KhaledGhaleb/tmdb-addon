@@ -10,27 +10,32 @@ export default function TMDB() {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleRequestToken = useCallback(async (requestToken: string) => {
-    setIsLoading(true);
-    try {
-      const response = await fetch(`/session_id?request_token=${requestToken}`);
-      if (!response.ok) throw new Error('Failed to create session');
-      
-      const sessionId = await response.text();
-      setSessionId(sessionId);
-      
-      window.history.replaceState({}, '', window.location.pathname);
-    } catch (e) {
-      console.error(e);
-      setError("Failed to create TMDB session");
-    } finally {
-      setIsLoading(false);
-    }
-  }, [setSessionId]);
+  const handleRequestToken = useCallback(
+    async (requestToken: string) => {
+      setIsLoading(true);
+      try {
+        const response = await fetch(
+          `/session_id?request_token=${requestToken}`,
+        );
+        if (!response.ok) throw new Error("Failed to create session");
+
+        const sessionId = await response.text();
+        setSessionId(sessionId);
+
+        window.history.replaceState({}, "", window.location.pathname);
+      } catch (e) {
+        console.error(e);
+        setError("Failed to create TMDB session");
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [setSessionId],
+  );
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
-    const requestToken = urlParams.get('request_token');
+    const requestToken = urlParams.get("request_token");
 
     if (requestToken) {
       handleRequestToken(requestToken);
@@ -44,8 +49,8 @@ export default function TMDB() {
     try {
       const uuid = crypto.randomUUID();
       const response = await fetch(`/request_token?cache_buster=${uuid}`);
-      if (!response.ok) throw new Error('Failed to get request token');
-      
+      if (!response.ok) throw new Error("Failed to get request token");
+
       const requestToken = await response.text();
       const tmdbAuthUrl = `https://www.themoviedb.org/authenticate/${requestToken}?redirect_to=${window.location.href}`;
       window.location.href = tmdbAuthUrl;
@@ -73,9 +78,7 @@ export default function TMDB() {
         {sessionId ? (
           <div className="flex flex-col items-center space-y-4">
             <Alert>
-              <AlertDescription>
-                You are logged in to TMDB
-              </AlertDescription>
+              <AlertDescription>You are logged in to TMDB</AlertDescription>
             </Alert>
             <DialogClose asChild>
               <Button variant="destructive" onClick={handleLogout}>
@@ -84,22 +87,18 @@ export default function TMDB() {
             </DialogClose>
           </div>
         ) : (
-          <Button
-            onClick={handleLogin}
-            disabled={isLoading}
-            className="w-full"
-          >
+          <Button onClick={handleLogin} disabled={isLoading} className="w-full">
             {isLoading ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 Connecting to TMDB...
               </>
             ) : (
-              'Login with TMDB'
+              "Login with TMDB"
             )}
           </Button>
         )}
       </div>
     </div>
   );
-} 
+}

@@ -48,7 +48,7 @@
       ]
     }
   },
- "streaming": {
+  "streaming": {
     "nfx": {
       "nameKey": "nfx",
       "watchProviderId": 8,

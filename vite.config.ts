@@ -5,10 +5,10 @@ import path from "path";
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
   plugins: [react()],
-  base: '/configure/',
-  publicDir: 'configure/public',
+  base: "/configure/",
+  publicDir: "configure/public",
   build: {
-    outDir: 'dist',
+    outDir: "dist",
     emptyOutDir: true,
   },
   resolve: {

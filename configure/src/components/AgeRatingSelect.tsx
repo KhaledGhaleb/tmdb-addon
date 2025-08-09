@@ -13,7 +13,7 @@ import { Info } from "lucide-react";
 export function AgeRatingSelect() {
   const { ageRating, setAgeRating } = useConfig();
 
-  const selectedRating = ageRatings.find(rating => rating.id === ageRating);
+  const selectedRating = ageRatings.find((rating) => rating.id === ageRating);
 
   const handleChange = (value: string) => {
     setAgeRating(value === "NONE" ? undefined : value);
@@ -33,7 +33,9 @@ export function AgeRatingSelect() {
           <SelectValue>
             {selectedRating && (
               <div className="flex items-center gap-2">
-                <Badge className={`${selectedRating.badge.color} text-white w-16 justify-center`}>
+                <Badge
+                  className={`${selectedRating.badge.color} text-white w-16 justify-center`}
+                >
                   {selectedRating.badge.text}
                 </Badge>
                 <span>{selectedRating.name}</span>
@@ -45,7 +47,9 @@ export function AgeRatingSelect() {
           {ageRatings.map((rating) => (
             <SelectItem key={rating.id} value={rating.id}>
               <div className="flex items-center gap-2">
-                <Badge className={`${rating.badge.color} text-white w-16 justify-center`}>
+                <Badge
+                  className={`${rating.badge.color} text-white w-16 justify-center`}
+                >
                   {rating.badge.text}
                 </Badge>
                 <div className="flex flex-col">
@@ -58,4 +62,4 @@ export function AgeRatingSelect() {
       </Select>
     </div>
   );
-} 
+}

@@ -1,16 +1,16 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { ConfigContext, type ConfigContextType, type CatalogConfig } from "./config";
-import { 
-  baseCatalogs, 
-  authCatalogs, 
-  streamingCatalogs 
-} from "@/data/catalogs";
-import { decompressFromEncodedURIComponent } from 'lz-string';
+import {
+  ConfigContext,
+  type ConfigContextType,
+  type CatalogConfig,
+} from "./config";
+import { baseCatalogs, authCatalogs, streamingCatalogs } from "@/data/catalogs";
+import { decompressFromEncodedURIComponent } from "lz-string";
 
 const allCatalogs = [
   ...baseCatalogs,
   ...authCatalogs,
-  ...Object.values(streamingCatalogs).flat()
+  ...Object.values(streamingCatalogs).flat(),
 ];
 
 export function ConfigProvider({ children }: { children: React.ReactNode }) {
@@ -31,69 +31,80 @@ export function ConfigProvider({ children }: { children: React.ReactNode }) {
   const [castCount, setCastCount] = useState<number | undefined>(5);
 
   const loadDefaultCatalogs = () => {
-    const defaultCatalogs = baseCatalogs.map(catalog => ({
+    const defaultCatalogs = baseCatalogs.map((catalog) => ({
       ...catalog,
       enabled: true,
-      showInHome: true
+      showInHome: true,
     }));
     setCatalogs(defaultCatalogs);
   };
 
   const loadConfigFromUrl = () => {
     try {
-      const path = window.location.pathname.split('/')[1];
+      const path = window.location.pathname.split("/")[1];
       const decompressedConfig = decompressFromEncodedURIComponent(path);
       const config = JSON.parse(decompressedConfig);
-      
+
       if (config.rpdbkey) setRpdbkey(config.rpdbkey);
       if (config.mdblistkey) setMdblistkey(config.mdblistkey);
       if (config.geminikey) setGeminiKey(config.geminikey);
-      if (config.provideImdbId) setProvideImdbId(config.provideImdbId === "true");
+      if (config.provideImdbId)
+        setProvideImdbId(config.provideImdbId === "true");
       if (config.tmdbPrefix) setTmdbPrefix(config.tmdbPrefix === "true");
-      if (config.hideEpisodeThumbnails) setHideEpisodeThumbnails(config.hideEpisodeThumbnails === "true");
+      if (config.hideEpisodeThumbnails)
+        setHideEpisodeThumbnails(config.hideEpisodeThumbnails === "true");
       if (config.sessionId) setSessionId(config.sessionId);
       if (config.ageRating) setAgeRating(config.ageRating);
       if (config.includeAdult) setIncludeAdult(config.includeAdult === "true");
       if (config.language) setLanguage(config.language);
-      if (config.hideInCinemaTag) setHideInCinemaTag(config.hideInCinemaTag === "true" || config.hideInCinemaTag === true);
-      if (config.castCount !== undefined) setCastCount(config.castCount === "Unlimited" ? undefined : Number(config.castCount));
-      
+      if (config.hideInCinemaTag)
+        setHideInCinemaTag(
+          config.hideInCinemaTag === "true" || config.hideInCinemaTag === true,
+        );
+      if (config.castCount !== undefined)
+        setCastCount(
+          config.castCount === "Unlimited"
+            ? undefined
+            : Number(config.castCount),
+        );
+
       if (config.catalogs) {
-        const catalogsWithNames = config.catalogs.map(catalog => {
+        const catalogsWithNames = config.catalogs.map((catalog) => {
           const existingCatalog = allCatalogs.find(
-            c => c.id === catalog.id && c.type === catalog.type
+            (c) => c.id === catalog.id && c.type === catalog.type,
           );
           return {
             ...catalog,
             name: existingCatalog?.name || catalog.id,
-            enabled: catalog.enabled !== undefined ? catalog.enabled : true 
+            enabled: catalog.enabled !== undefined ? catalog.enabled : true,
           };
         });
         setCatalogs(catalogsWithNames);
 
         const selectedStreamingServices = new Set(
           catalogsWithNames
-            .filter(catalog => catalog.id.startsWith('streaming.'))
-            .map(catalog => catalog.id.split('.')[1])
+            .filter((catalog) => catalog.id.startsWith("streaming."))
+            .map((catalog) => catalog.id.split(".")[1]),
         );
 
         setStreaming(Array.from(selectedStreamingServices) as string[]);
       } else {
-        loadDefaultCatalogs(); 
+        loadDefaultCatalogs();
       }
-      
-      if (config.searchEnabled) setSearchEnabled(config.searchEnabled === "true");
-      
-      window.history.replaceState({}, '', '/configure');
+
+      if (config.searchEnabled)
+        setSearchEnabled(config.searchEnabled === "true");
+
+      window.history.replaceState({}, "", "/configure");
     } catch (error) {
-      console.error('Error loading config from URL:', error);
-      loadDefaultCatalogs(); 
+      console.error("Error loading config from URL:", error);
+      loadDefaultCatalogs();
     }
   };
 
   useEffect(() => {
     const path = window.location.pathname;
-    if (path.includes('configure')) {
+    if (path.includes("configure")) {
       loadConfigFromUrl();
     } else {
       loadDefaultCatalogs();
@@ -131,14 +142,12 @@ export function ConfigProvider({ children }: { children: React.ReactNode }) {
     setSearchEnabled,
     setHideInCinemaTag,
     setCastCount,
-    loadConfigFromUrl
+    loadConfigFromUrl,
   };
 
   return (
-    <ConfigContext.Provider value={value}>
-      {children}
-    </ConfigContext.Provider>
+    <ConfigContext.Provider value={value}>{children}</ConfigContext.Provider>
   );
 }
 
-export const useConfig = () => useContext(ConfigContext); 
+export const useConfig = () => useContext(ConfigContext);

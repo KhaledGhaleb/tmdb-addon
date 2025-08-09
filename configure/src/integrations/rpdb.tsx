@@ -27,12 +27,14 @@ export default function RPDB() {
       setError("");
       return false;
     }
-    
+
     setIsChecking(true);
     try {
-      const response = await fetch(`https://api.ratingposterdb.com/${key}/isValid`);
+      const response = await fetch(
+        `https://api.ratingposterdb.com/${key}/isValid`,
+      );
       const data = await response.json();
-      
+
       if (!(data || {}).valid) {
         setError("RPDB Key is invalid, please try again");
         setIsValid(false);
@@ -107,12 +109,10 @@ export default function RPDB() {
         </DialogClose>
         {isValid ? (
           <DialogClose asChild>
-            <Button onClick={handleSave}>
-              Save Changes
-            </Button>
+            <Button onClick={handleSave}>Save Changes</Button>
           </DialogClose>
         ) : (
-          <Button 
+          <Button
             onClick={() => validateRPDBKey(tempKey)}
             disabled={!tempKey || isChecking}
           >
@@ -122,11 +122,11 @@ export default function RPDB() {
                 Checking
               </>
             ) : (
-              'Check Key'
+              "Check Key"
             )}
           </Button>
         )}
       </div>
     </div>
   );
-} 
+}

@@ -24,22 +24,26 @@ tmdb-addon/
 ## Setting Up Development Environment
 
 1. Clone the repository:
+
 ```bash
 git clone https://github.com/mrcanelas/tmdb-addon.git
 cd tmdb-addon
 ```
 
 2. Install dependencies:
+
 ```bash
 npm install
 ```
 
 3. Set up environment variables:
+
 ```bash
 cp .env.example .env
 ```
 
 Edit `.env` with your development credentials:
+
 ```env
 MONGODB_URI=your_mongodb_uri
 FANART_API=your_fanart_key
@@ -49,6 +53,7 @@ PORT=1337
 ```
 
 4. Start development server:
+
 ```bash
 # Terminal 1 - Backend
 npm run dev:server
@@ -60,15 +65,18 @@ npm run dev
 ## Development Workflow
 
 1. **Create a new branch**:
+
 ```bash
 git checkout -b feature/your-feature-name
 ```
 
 2. **Make your changes**:
+
 - Backend changes go in the `addon/` directory
 - Frontend changes go in the `configure/` directory
 
 3. **Testing**:
+
 ```bash
 # Run tests
 npm test
@@ -78,6 +86,7 @@ npm run lint
 ```
 
 4. **Building**:
+
 ```bash
 npm run build
 ```
@@ -85,6 +94,7 @@ npm run build
 ## Code Style
 
 We use ESLint and Prettier for code formatting. Configuration can be found in:
+
 - `.eslintrc.js`
 - `.prettierrc`
 
@@ -98,6 +108,7 @@ We use ESLint and Prettier for code formatting. Configuration can be found in:
 ### Backend Debugging
 
 1. Using VS Code:
+
 ```json
 {
   "version": "0.2.0",
@@ -114,6 +125,7 @@ We use ESLint and Prettier for code formatting. Configuration can be found in:
 ```
 
 2. Using Chrome DevTools:
+
 ```bash
 node --inspect addon/server.js
 ```
@@ -151,4 +163,4 @@ node --inspect addon/server.js
 4. **Testing**:
    - Write unit tests for critical functions
    - Test edge cases
-   - Use meaningful test descriptions 
+   - Use meaningful test descriptions

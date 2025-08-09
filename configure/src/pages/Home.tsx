@@ -211,7 +211,7 @@ const languages = [
   { value: "yi-YI", label: "Yiddish" },
   { value: "yo-YO", label: "Yoruba" },
   { value: "za-ZA", label: "Zhuang" },
-  { value: "zu-ZA", label: "Zulu" }
+  { value: "zu-ZA", label: "Zulu" },
 ];
 
 interface Movie {
@@ -228,21 +228,25 @@ export default function Home() {
   useEffect(() => {
     const fetchPopularMovies = async () => {
       try {
-        const response = await fetch('https://cinemeta-catalogs.strem.io/top/catalog/movie/top.json');
+        const response = await fetch(
+          "https://cinemeta-catalogs.strem.io/top/catalog/movie/top.json",
+        );
         const data = await response.json();
-        
-        const moviesWithId = data.metas.filter(movie => movie.imdb_id);
-        
+
+        const moviesWithId = data.metas.filter((movie) => movie.imdb_id);
+
         if (moviesWithId.length > 0) {
           const randomIndex = Math.floor(Math.random() * moviesWithId.length);
           const randomMovie = moviesWithId[randomIndex];
-          
+
           const highQualityImageUrl = `https://images.metahub.space/background/medium/${randomMovie.imdb_id}/img`;
           setBackgroundUrl(highQualityImageUrl);
         }
       } catch (error) {
-        console.error('Error fetching popular movies:', error);
-        setBackgroundUrl('https://images.metahub.space/background/medium/tt0816692/img');
+        console.error("Error fetching popular movies:", error);
+        setBackgroundUrl(
+          "https://images.metahub.space/background/medium/tt0816692/img",
+        );
       }
     };
 
@@ -253,12 +257,12 @@ export default function Home() {
     <div className="relative min-h-screen overflow-hidden">
       <div className="fixed inset-0 z-0">
         <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/80 z-10" />
-        <div 
+        <div
           className="absolute inset-0 blur-sm"
           style={{
             backgroundImage: `url(${backgroundUrl})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
+            backgroundSize: "cover",
+            backgroundPosition: "center",
           }}
         />
       </div>
@@ -281,13 +285,17 @@ export default function Home() {
           </h1>
 
           <p className="text-xl sm:text-2xl text-gray-300 mb-8">
-            Explore a vast catalog of movies and TV shows with metadata provided by TMDB.
-            Version {packageJson.version}
+            Explore a vast catalog of movies and TV shows with metadata provided
+            by TMDB. Version {packageJson.version}
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
             <div className="w-full sm:w-64">
-              <Select value={language} onValueChange={setLanguage} defaultValue="en-US">
+              <Select
+                value={language}
+                onValueChange={setLanguage}
+                defaultValue="en-US"
+              >
                 <SelectTrigger className="bg-white/10 border-white/20 text-white">
                   <SelectValue placeholder="Select language" />
                 </SelectTrigger>
@@ -319,15 +327,15 @@ export default function Home() {
             <div className="bg-white/10 rounded-lg p-6 backdrop-blur-sm">
               <h3 className="text-xl font-semibold mb-2">Movies</h3>
               <p className="text-gray-300">
-                Access detailed information about thousands of movies, including synopses,
-                cast, ratings, and much more.
+                Access detailed information about thousands of movies, including
+                synopses, cast, ratings, and much more.
               </p>
             </div>
             <div className="bg-white/10 rounded-lg p-6 backdrop-blur-sm">
               <h3 className="text-xl font-semibold mb-2">TV Shows</h3>
               <p className="text-gray-300">
-                Explore TV series, seasons, episodes, and stay up to date
-                with your favorite shows.
+                Explore TV series, seasons, episodes, and stay up to date with
+                your favorite shows.
               </p>
             </div>
           </div>

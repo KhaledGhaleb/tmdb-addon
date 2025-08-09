@@ -32,93 +32,91 @@ export const authCatalogs: Catalog[] = [
 export const streamingCatalogs: Record<string, Catalog[]> = {
   nfx: [
     { id: "streaming.nfx", name: "Netflix", type: "movie" },
-    { id: "streaming.nfx", name: "Netflix", type: "series" }
+    { id: "streaming.nfx", name: "Netflix", type: "series" },
   ],
   nfk: [
     { id: "streaming.nfk", name: "Netflix Kids", type: "movie" },
-    { id: "streaming.nfk", name: "Netflix Kids", type: "series" }
+    { id: "streaming.nfk", name: "Netflix Kids", type: "series" },
   ],
   hbm: [
     { id: "streaming.hbm", name: "HBO Max", type: "movie" },
-    { id: "streaming.hbm", name: "HBO Max", type: "series" }
+    { id: "streaming.hbm", name: "HBO Max", type: "series" },
   ],
   dnp: [
     { id: "streaming.dnp", name: "Disney+", type: "movie" },
-    { id: "streaming.dnp", name: "Disney+", type: "series" }
+    { id: "streaming.dnp", name: "Disney+", type: "series" },
   ],
   amp: [
     { id: "streaming.amp", name: "Prime Video", type: "movie" },
-    { id: "streaming.amp", name: "Prime Video", type: "series" }
+    { id: "streaming.amp", name: "Prime Video", type: "series" },
   ],
   atp: [
     { id: "streaming.atp", name: "Apple TV+", type: "movie" },
-    { id: "streaming.atp", name: "Apple TV+", type: "series" }
+    { id: "streaming.atp", name: "Apple TV+", type: "series" },
   ],
   pmp: [
     { id: "streaming.pmp", name: "Paramount+", type: "movie" },
-    { id: "streaming.pmp", name: "Paramount+", type: "series" }
+    { id: "streaming.pmp", name: "Paramount+", type: "series" },
   ],
   pcp: [
     { id: "streaming.pcp", name: "Peacock Premium", type: "movie" },
-    { id: "streaming.pcp", name: "Peacock Premium", type: "series" }
+    { id: "streaming.pcp", name: "Peacock Premium", type: "series" },
   ],
   hlu: [
     { id: "streaming.hlu", name: "Hulu", type: "movie" },
-    { id: "streaming.hlu", name: "Hulu", type: "series" }
+    { id: "streaming.hlu", name: "Hulu", type: "series" },
   ],
   cts: [
     { id: "streaming.cts", name: "Curiosity Stream", type: "movie" },
-    { id: "streaming.cts", name: "Curiosity Stream", type: "series" }
+    { id: "streaming.cts", name: "Curiosity Stream", type: "series" },
   ],
   mgl: [
     { id: "streaming.mgl", name: "MagellanTV", type: "movie" },
-    { id: "streaming.mgl", name: "MagellanTV", type: "series" }
+    { id: "streaming.mgl", name: "MagellanTV", type: "series" },
   ],
   cru: [
     { id: "streaming.cru", name: "Crunchyroll", type: "movie" },
-    { id: "streaming.cru", name: "Crunchyroll", type: "series" }
+    { id: "streaming.cru", name: "Crunchyroll", type: "series" },
   ],
-  hay: [
-    { id: "streaming.hay", name: "Hayu", type: "series" }
-  ],
+  hay: [{ id: "streaming.hay", name: "Hayu", type: "series" }],
   clv: [
     { id: "streaming.clv", name: "Clarovideo", type: "movie" },
-    { id: "streaming.clv", name: "Clarovideo", type: "series" }
+    { id: "streaming.clv", name: "Clarovideo", type: "series" },
   ],
   gop: [
     { id: "streaming.gop", name: "Globoplay", type: "movie" },
-    { id: "streaming.gop", name: "Globoplay", type: "series" }
+    { id: "streaming.gop", name: "Globoplay", type: "series" },
   ],
   hst: [
     { id: "streaming.hst", name: "Hotstar", type: "movie" },
-    { id: "streaming.hst", name: "Hotstar", type: "series" }
+    { id: "streaming.hst", name: "Hotstar", type: "series" },
   ],
   zee: [
     { id: "streaming.zee", name: "Zee5", type: "movie" },
-    { id: "streaming.zee", name: "Zee5", type: "series" }
+    { id: "streaming.zee", name: "Zee5", type: "series" },
   ],
   nlz: [
     { id: "streaming.nlz", name: "NLZIET", type: "movie" },
-    { id: "streaming.nlz", name: "NLZIET", type: "series" }
+    { id: "streaming.nlz", name: "NLZIET", type: "series" },
   ],
   vil: [
     { id: "streaming.vil", name: "Videoland", type: "movie" },
-    { id: "streaming.vil", name: "Videoland", type: "series" }
+    { id: "streaming.vil", name: "Videoland", type: "series" },
   ],
   sst: [
     { id: "streaming.sst", name: "SkyShowtime", type: "movie" },
-    { id: "streaming.sst", name: "SkyShowtime", type: "series" }
+    { id: "streaming.sst", name: "SkyShowtime", type: "series" },
   ],
   blv: [
     { id: "streaming.blv", name: "BluTV", type: "movie" },
-    { id: "streaming.blv", name: "BluTV", type: "series" }
+    { id: "streaming.blv", name: "BluTV", type: "series" },
   ],
   cpd: [
     { id: "streaming.cpd", name: "Canal+", type: "movie" },
-    { id: "streaming.cpd", name: "Canal+", type: "series" }
+    { id: "streaming.cpd", name: "Canal+", type: "series" },
   ],
   dpe: [
     { id: "streaming.dpe", name: "Discovery+", type: "movie" },
-    { id: "streaming.dpe", name: "Discovery+", type: "series" }
-  ]
-}; 
+    { id: "streaming.dpe", name: "Discovery+", type: "series" },
+  ],
+};

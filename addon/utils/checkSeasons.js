@@ -1,4 +1,4 @@
-const axios = require('axios');
+const axios = require("axios");
 const { cache } = require("../lib/getCache");
 
 const CHECK_INTERVAL_DAYS = 7; // You can adjust as needed
@@ -20,7 +20,7 @@ async function openGithubIssue(title, body, labels = []) {
   await axios.post(
     `https://api.github.com/repos/${GITHUB_REPO}/issues`,
     { title, body, labels },
-    { headers: { Authorization: `token ${GITHUB_TOKEN}` } }
+    { headers: { Authorization: `token ${GITHUB_TOKEN}` } },
   );
 }
 
@@ -29,11 +29,11 @@ async function issueExistsOnGithub(title) {
   const url = `https://api.github.com/repos/${GITHUB_REPO}/issues?labels=season-mismatch&per_page=100`;
   try {
     const resp = await axios.get(url, {
-      headers: { Authorization: `token ${GITHUB_TOKEN}` }
+      headers: { Authorization: `token ${GITHUB_TOKEN}` },
     });
-    return resp.data.some(issue => issue.title === title);
+    return resp.data.some((issue) => issue.title === title);
   } catch (e) {
-    console.error('Error checking existing issues:', e.message);
+    console.error("Error checking existing issues:", e.message);
     return false;
   }
 }
@@ -47,19 +47,25 @@ async function checkSeasonsAndReport(tmdbId, imdbId, resp, name) {
 
   const cacheData = await getLastChecked(tmdbId);
   const now = new Date();
-  const lastChecked = cacheData && cacheData.lastChecked ? new Date(cacheData.lastChecked) : null;
-  const diffDays = lastChecked ? (now - lastChecked) / (1000 * 60 * 60 * 24) : Infinity;
+  const lastChecked =
+    cacheData && cacheData.lastChecked ? new Date(cacheData.lastChecked) : null;
+  const diffDays = lastChecked
+    ? (now - lastChecked) / (1000 * 60 * 60 * 24)
+    : Infinity;
   if (diffDays < CHECK_INTERVAL_DAYS) return; // Do not check yet
 
   // 1. Number of seasons from TMDB (resp)
   let tmdbSeasons = 0;
   if (resp.meta && resp.meta.videos) {
-    tmdbSeasons = new Set(resp.meta.videos
-      .map(v => v.season)
-      .filter(season => season !== 0 && season !== "0")
+    tmdbSeasons = new Set(
+      resp.meta.videos
+        .map((v) => v.season)
+        .filter((season) => season !== 0 && season !== "0"),
     ).size;
   } else if (resp.seasons) {
-    tmdbSeasons = resp.seasons.filter(s => s.season_number !== 0 && s.season_number !== "0").length;
+    tmdbSeasons = resp.seasons.filter(
+      (s) => s.season_number !== 0 && s.season_number !== "0",
+    ).length;
   }
 
   // 2. Number of seasons from Stremio
@@ -69,9 +75,10 @@ async function checkSeasonsAndReport(tmdbId, imdbId, resp, name) {
   try {
     const stremioResp = await axios.get(stremioUrl);
     const stremioVideos = stremioResp.data.meta.videos || [];
-    stremioSeasons = new Set(stremioVideos
-      .map(v => v.season)
-      .filter(season => season !== 0 && season !== "0")
+    stremioSeasons = new Set(
+      stremioVideos
+        .map((v) => v.season)
+        .filter((season) => season !== 0 && season !== "0"),
     ).size;
     if (stremioResp.data.meta && stremioResp.data.meta.name) {
       stremioName = stremioResp.data.meta.name;
@@ -83,11 +90,12 @@ async function checkSeasonsAndReport(tmdbId, imdbId, resp, name) {
 
   // 3. Compare and open issue if necessary
   if (tmdbSeasons !== stremioSeasons) {
-    console.log("Mismatch found")
+    console.log("Mismatch found");
     const tmdbLink = `https://www.themoviedb.org/tv/${tmdbId}`;
     const stremioLink = `https://web.stremio.com/#/detail/series/${imdbId}`;
     const issueTitle = `Season count mismatch in "${stremioName}"`;
-    const body = `There is a difference in the number of seasons for this series.\n\n` +
+    const body =
+      `There is a difference in the number of seasons for this series.\n\n` +
       `**TMDB:** ${tmdbSeasons} seasons\n` +
       `**Stremio:** ${stremioSeasons} seasons\n` +
       `\n` +
@@ -98,20 +106,16 @@ async function checkSeasonsAndReport(tmdbId, imdbId, resp, name) {
       `- [Stremio page](${stremioLink})`;
     // Verifica se já existe issue aberta para esse título
     const exists = await issueExistsOnGithub(issueTitle);
-    console.log("Exists:", exists)  
+    console.log("Exists:", exists);
     if (!exists) {
-      console.log("Creating issue:", issueTitle)
-      await openGithubIssue(
-        issueTitle,
-        body,
-        ['season-mismatch']
-      );
+      console.log("Creating issue:", issueTitle);
+      await openGithubIssue(issueTitle, body, ["season-mismatch"]);
     }
   }
 
   // 4. Update lastChecked
   await setLastChecked(tmdbId, { lastChecked: now.toISOString() });
-  console.log("Last checked updated")
+  console.log("Last checked updated");
 }
 
-module.exports = { checkSeasonsAndReport }; 
+module.exports = { checkSeasonsAndReport };

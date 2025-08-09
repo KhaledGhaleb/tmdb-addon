@@ -30,7 +30,9 @@ export default function Gemini() {
 
     setIsChecking(true);
     try {
-      const response = await fetch(`https://generativelanguage.googleapis.com/v1/models?key=${key}`); 
+      const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1/models?key=${key}`,
+      );
       const data = await response.json();
 
       if (!(data || {})) {
@@ -107,9 +109,7 @@ export default function Gemini() {
         </DialogClose>
         {isValid ? (
           <DialogClose asChild>
-            <Button onClick={handleSave}>
-              Save Changes
-            </Button>
+            <Button onClick={handleSave}>Save Changes</Button>
           </DialogClose>
         ) : (
           <Button

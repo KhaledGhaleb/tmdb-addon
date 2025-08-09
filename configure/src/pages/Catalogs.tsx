@@ -1,16 +1,20 @@
 import { useEffect } from "react";
 import { useConfig } from "@/contexts/ConfigContext";
 import { baseCatalogs, authCatalogs, streamingCatalogs } from "@/data/catalogs";
-import { 
-  DndContext, 
-  DragEndEvent, 
+import {
+  DndContext,
+  DragEndEvent,
   closestCenter,
   TouchSensor,
   MouseSensor,
   useSensor,
-  useSensors 
+  useSensors,
 } from "@dnd-kit/core";
-import { SortableContext, verticalListSortingStrategy, arrayMove } from "@dnd-kit/sortable";
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+  arrayMove,
+} from "@dnd-kit/sortable";
 import { SortableCatalogCard } from "@/components/SortableCatalogCard";
 
 const CatalogColumn = ({
@@ -19,13 +23,13 @@ const CatalogColumn = ({
   catalogConfigs,
   onCatalogChange,
   onDragEnd,
-  sensors
+  sensors,
 }) => (
   <div className="flex flex-col gap-6">
     <h2 className="text-lg font-semibold">{title}</h2>
-    <DndContext 
+    <DndContext
       sensors={sensors}
-      collisionDetection={closestCenter} 
+      collisionDetection={closestCenter}
       onDragEnd={onDragEnd}
     >
       <SortableContext
@@ -37,9 +41,9 @@ const CatalogColumn = ({
             key={`${catalog.id}-${catalog.type}`}
             id={`${catalog.id}-${catalog.type}`}
             catalog={catalog}
-            name={catalog.name} 
+            name={catalog.name}
             config={catalogConfigs[`${catalog.id}-${catalog.type}`]}
-            onChange={(enabled, showInHome) => 
+            onChange={(enabled, showInHome) =>
               onCatalogChange(catalog.id, catalog.type, enabled, showInHome)
             }
           />
@@ -50,14 +54,15 @@ const CatalogColumn = ({
 );
 
 const Catalogs = () => {
-  const { sessionId, mdblistkey, streaming, catalogs, setCatalogs } = useConfig();
+  const { sessionId, mdblistkey, streaming, catalogs, setCatalogs } =
+    useConfig();
 
   const mouseSensor = useSensor(MouseSensor, {
     activationConstraint: {
       distance: 10,
     },
   });
-  
+
   const touchSensor = useSensor(TouchSensor, {
     activationConstraint: {
       delay: 250,
@@ -79,17 +84,17 @@ const Catalogs = () => {
     setCatalogs((prev) => {
       const existingIds = new Set(prev.map((c) => `${c.id}-${c.type}`));
       const newCatalogs = allCatalogs.filter(
-        (c) => !existingIds.has(`${c.id}-${c.type}`)
+        (c) => !existingIds.has(`${c.id}-${c.type}`),
       );
 
       return [
         ...prev,
-        ...newCatalogs.map((c) => ({ 
-          id: c.id, 
-          type: c.type, 
-          name: c.name, 
+        ...newCatalogs.map((c) => ({
+          id: c.id,
+          type: c.type,
+          name: c.name,
           enabled: false,
-          showInHome: false 
+          showInHome: false,
         })),
       ];
     });
@@ -109,7 +114,7 @@ const Catalogs = () => {
       return prev.map((c) =>
         c.id === catalogId && c.type === type
           ? { ...c, enabled: enabled === true, showInHome }
-          : c
+          : c,
       );
     });
   };
@@ -131,7 +136,9 @@ const Catalogs = () => {
     <main className="md:p-12 px-2 py-12">
       <div className="flex flex-col mb-6">
         <h1 className="text-xl font-semibold mb-1">Catalogs</h1>
-        <p className="text-gray-500 text-sm">Manage the catalogs available in the addon.</p>
+        <p className="text-gray-500 text-sm">
+          Manage the catalogs available in the addon.
+        </p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

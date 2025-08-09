@@ -1,4 +1,4 @@
-import { compressToEncodedURIComponent } from 'lz-string';
+import { compressToEncodedURIComponent } from "lz-string";
 
 interface AddonConfig {
   rpdbkey?: string;
@@ -31,27 +31,31 @@ export function generateAddonUrl(config: AddonConfig): string {
     mdblistkey: config.mdblistkey || undefined,
     sessionId: config.sessionId || undefined,
     catalogs: config.catalogs
-      ?.filter(catalog => catalog.enabled === false ? false : true)
+      ?.filter((catalog) => (catalog.enabled === false ? false : true))
       .map(({ id, type, name, showInHome }) => ({
         id,
         type,
         name,
-        showInHome
+        showInHome,
       })),
     includeAdult: config.includeAdult === true ? "true" : undefined,
     provideImdbId: config.provideImdbId === true ? "true" : undefined,
     tmdbPrefix: config.tmdbPrefix === true ? "true" : undefined,
-    hideEpisodeThumbnails: config.hideEpisodeThumbnails === true ? "true" : undefined,
+    hideEpisodeThumbnails:
+      config.hideEpisodeThumbnails === true ? "true" : undefined,
     searchEnabled: config.searchEnabled === false ? "false" : undefined,
     hideInCinemaTag: config.hideInCinemaTag === true ? "true" : undefined,
-    castCount: typeof config.castCount === "number" ? config.castCount : undefined,
+    castCount:
+      typeof config.castCount === "number" ? config.castCount : undefined,
   };
 
   const cleanConfig = Object.fromEntries(
-    Object.entries(configToEncode).filter(([_, value]) => value !== undefined && value !== null)
+    Object.entries(configToEncode).filter(
+      ([_, value]) => value !== undefined && value !== null,
+    ),
   );
 
   const compressed = compressToEncodedURIComponent(JSON.stringify(cleanConfig));
-  
+
   return `${window.location.origin}/${compressed}/manifest.json`;
 }

@@ -5,6 +5,7 @@ This document describes the API endpoints available in the TMDB Addon.
 ## Base URL
 
 All URLs referenced in the documentation have the following base:
+
 ```
 http://your_domain:1337
 ```
@@ -16,6 +17,7 @@ Most endpoints don't require authentication. However, some features might requir
 ## Endpoints
 
 ### Manifest
+
 ```http
 GET /manifest.json
 ```
@@ -23,6 +25,7 @@ GET /manifest.json
 Returns the Stremio addon manifest with addon details and available resources.
 
 #### Response
+
 ```json
 {
   "id": "tmdb-addon",
@@ -36,6 +39,7 @@ Returns the Stremio addon manifest with addon details and available resources.
 ```
 
 ### Catalog
+
 ```http
 GET /catalog/:type/:id/:extra?.json
 ```
@@ -43,11 +47,13 @@ GET /catalog/:type/:id/:extra?.json
 Returns a catalog of items based on type and ID.
 
 #### Parameters
+
 - `type`: Type of content (`movie` or `series`)
 - `id`: Catalog ID
 - `extra`: Additional parameters (optional)
 
 #### Response
+
 ```json
 {
   "metas": [
@@ -63,6 +69,7 @@ Returns a catalog of items based on type and ID.
 ```
 
 ### Meta
+
 ```http
 GET /meta/:type/:id.json
 ```
@@ -70,10 +77,12 @@ GET /meta/:type/:id.json
 Returns metadata for a specific item.
 
 #### Parameters
+
 - `type`: Type of content (`movie` or `series`)
 - `id`: TMDB ID or IMDb ID
 
 #### Response
+
 ```json
 {
   "meta": {
@@ -92,6 +101,7 @@ Returns metadata for a specific item.
 ```
 
 ### Configuration
+
 ```http
 GET /configure
 ```
@@ -108,6 +118,7 @@ The API uses standard HTTP response codes:
 - `500`: Internal Server Error
 
 Error response format:
+
 ```json
 {
   "error": "Error message",
@@ -123,6 +134,7 @@ The API implements rate limiting to prevent abuse:
 - 1000 requests per hour per IP
 
 Rate limit headers:
+
 ```
 X-RateLimit-Limit: 100
 X-RateLimit-Remaining: 99
@@ -138,6 +150,7 @@ The API implements caching for better performance:
 - Meta: 24 hours
 
 Cache headers:
+
 ```
 Cache-Control: public, max-age=3600
 ETag: "33a64df551425fcc55e4d42a148795d9f25f89d4"
@@ -146,16 +159,19 @@ ETag: "33a64df551425fcc55e4d42a148795d9f25f89d4"
 ## Examples
 
 ### Fetching Popular Movies
+
 ```http
 GET /catalog/movie/tmdb.top/skip=0&limit=100.json
 ```
 
 ### Getting Movie Details
+
 ```http
 GET /meta/movie/tmdb:106646.json
 ```
 
 ### Configuring the Addon
+
 ```http
 GET /configure
 ```
@@ -176,4 +192,4 @@ For development and testing, you can use the following tools:
 
 - [Stremio Addon SDK Documentation](https://github.com/Stremio/stremio-addon-sdk)
 - [TMDB API Documentation](https://developers.themoviedb.org/3)
-- [Fanart.tv API Documentation](https://fanarttv.docs.apiary.io/) 
+- [Fanart.tv API Documentation](https://fanarttv.docs.apiary.io/)

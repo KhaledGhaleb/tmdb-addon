@@ -26,10 +26,13 @@
 ## ⚙️ Configuration
 
 ### Language Settings
+
 Choose from any language supported by TMDB for your metadata.
 
 ### Catalog Options
+
 Customize which catalogs appear on your Stremio:
+
 - Movies
   - Popular
   - Year
@@ -42,6 +45,7 @@ Customize which catalogs appear on your Stremio:
   - Trending
 
 ### Integration Features
+
 - TMDB Account Connection
 - Watchlist Sync
 - Rating Posters Support
@@ -52,6 +56,7 @@ Customize which catalogs appear on your Stremio:
 For detailed instructions on hosting your own instance, check our [Self-Hosting Guide](docs/self-hosting.md).
 
 ### Quick Start with Docker
+
 ```bash
 docker run -d \
   --name tmdb-addon \
@@ -75,6 +80,7 @@ docker run -d \
 We welcome contributions! Please read our [Contributing Guide](docs/contributing.md) to get started.
 
 ### Development Setup
+
 ```bash
 # Clone the repository
 git clone https://github.com/mrcanelas/tmdb-addon.git
@@ -107,7 +113,3 @@ The metadata is provided by [TMDB](https://themoviedb.org/) and is subject to ch
 <p align="center">
 Made with ❤️ by the TMDB Addon community
 </p>
-
-
-
- 

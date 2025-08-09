@@ -1,4 +1,4 @@
-import { createContext } from 'react';
+import { createContext } from "react";
 
 export type CatalogConfig = {
   id: string;
@@ -34,7 +34,9 @@ export type ConfigContextType = {
   setLanguage: (language: string) => void;
   setSessionId: (sessionId: string) => void;
   setStreaming: (streaming: string[]) => void;
-  setCatalogs: (catalogs: CatalogConfig[] | ((prev: CatalogConfig[]) => CatalogConfig[])) => void;
+  setCatalogs: (
+    catalogs: CatalogConfig[] | ((prev: CatalogConfig[]) => CatalogConfig[]),
+  ) => void;
   setAgeRating: (ageRating: string | undefined) => void;
   setSearchEnabled: (enabled: boolean) => void;
   setHideInCinemaTag: (hide: boolean) => void;
@@ -42,4 +44,6 @@ export type ConfigContextType = {
   loadConfigFromUrl: () => void;
 };
 
-export const ConfigContext = createContext<ConfigContextType | undefined>(undefined); 
+export const ConfigContext = createContext<ConfigContextType | undefined>(
+  undefined,
+);

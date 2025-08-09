@@ -1,12 +1,13 @@
-require("dotenv").config();
-const { MovieDb } = require("moviedb-promise");
+// addon/lib/whatever-this-file-is.js
+import "dotenv/config";
+import { getMeta } from "./getMeta.js";
+import { MovieDb } from "moviedb-promise";
+import { getGenreList } from "./getGenreList.js";
+import { getLanguages } from "./getLanguages.js";
+import { parseMedia } from "../utils/parseProps.js";
+import { fetchMDBListItems, parseMDBListItems } from "../utils/mdbList.js";
 const moviedb = new MovieDb(process.env.TMDB_API);
-const { getGenreList } = require("./getGenreList");
-const { getLanguages } = require("./getLanguages");
-const { parseMedia } = require("../utils/parseProps");
-const { fetchMDBListItems, parseMDBListItems } = require("../utils/mdbList");
-const { getMeta } = require("./getMeta");
-const CATALOG_TYPES = require("../static/catalog-types.json");
+import CATALOG_TYPES from "../static/catalog-types.json" with { type: "json" };
 
 async function getCatalog(type, language, page, id, genre, config) {
   const mdblistKey = config.mdblistkey;
@@ -19,7 +20,7 @@ async function getCatalog(type, language, page, id, genre, config) {
       type,
       genre,
       language,
-      config.rpdbkey,
+      config.rpdbkey
     );
 
     return parseResults;
@@ -33,7 +34,7 @@ async function getCatalog(type, language, page, id, genre, config) {
     id,
     genre,
     genreList,
-    config,
+    config
   );
 
   const fetchFunction =
@@ -49,10 +50,10 @@ async function getCatalog(type, language, page, id, genre, config) {
           .catch((err) => {
             console.error(
               `Erro ao buscar metadados para ${item.id}:`,
-              err.message,
+              err.message
             );
             return null;
-          }),
+          })
       );
 
       const metas = (await Promise.all(metaPromises)).filter(Boolean);
@@ -69,7 +70,7 @@ async function buildParameters(
   id,
   genre,
   genreList,
-  config,
+  config
 ) {
   const languages = await getLanguages();
   const parameters = { language, page, "vote_count.gte": 10 };
@@ -160,4 +161,4 @@ function findProvider(providerId) {
   return provider;
 }
 
-module.exports = { getCatalog };
+export { getCatalog };

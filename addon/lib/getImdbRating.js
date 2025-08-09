@@ -1,9 +1,9 @@
-const axios = require("axios");
+import axios from "axios";
 
 async function getImdbRating(imdbId, type) {
   try {
     const response = await axios.get(
-      `https://v3-cinemeta.strem.io/meta/${type}/${imdbId}.json`,
+      `https://v3-cinemeta.strem.io/meta/${type}/${imdbId}.json`
     );
     const data = response.data.meta;
     return data?.imdbRating || undefined;
@@ -13,4 +13,4 @@ async function getImdbRating(imdbId, type) {
   }
 }
 
-module.exports = { getImdbRating };
+export { getImdbRating };

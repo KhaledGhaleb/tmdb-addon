@@ -1,5 +1,5 @@
-const axios = require("axios");
-const { cache } = require("../lib/getCache");
+import axios from "axios";
+import { cache } from "../lib/getCache.js";
 
 const CHECK_INTERVAL_DAYS = 7; // You can adjust as needed
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
@@ -20,7 +20,7 @@ async function openGithubIssue(title, body, labels = []) {
   await axios.post(
     `https://api.github.com/repos/${GITHUB_REPO}/issues`,
     { title, body, labels },
-    { headers: { Authorization: `token ${GITHUB_TOKEN}` } },
+    { headers: { Authorization: `token ${GITHUB_TOKEN}` } }
   );
 }
 
@@ -60,11 +60,11 @@ async function checkSeasonsAndReport(tmdbId, imdbId, resp, name) {
     tmdbSeasons = new Set(
       resp.meta.videos
         .map((v) => v.season)
-        .filter((season) => season !== 0 && season !== "0"),
+        .filter((season) => season !== 0 && season !== "0")
     ).size;
   } else if (resp.seasons) {
     tmdbSeasons = resp.seasons.filter(
-      (s) => s.season_number !== 0 && s.season_number !== "0",
+      (s) => s.season_number !== 0 && s.season_number !== "0"
     ).length;
   }
 
@@ -78,7 +78,7 @@ async function checkSeasonsAndReport(tmdbId, imdbId, resp, name) {
     stremioSeasons = new Set(
       stremioVideos
         .map((v) => v.season)
-        .filter((season) => season !== 0 && season !== "0"),
+        .filter((season) => season !== 0 && season !== "0")
     ).size;
     if (stremioResp.data.meta && stremioResp.data.meta.name) {
       stremioName = stremioResp.data.meta.name;
@@ -118,4 +118,4 @@ async function checkSeasonsAndReport(tmdbId, imdbId, resp, name) {
   console.log("Last checked updated");
 }
 
-module.exports = { checkSeasonsAndReport };
+export { checkSeasonsAndReport };

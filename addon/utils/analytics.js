@@ -1,7 +1,7 @@
-require("dotenv").config();
-const swaggerStats = require("swagger-stats");
-const express = require("express");
-const packageJson = require("../../package.json");
+import "dotenv/config";
+import express from "express";
+import swaggerStats from "swagger-stats";
+import packageJson from "../../package.json" with { type: "json" };
 
 class Analytics {
   static instance;
@@ -36,4 +36,4 @@ class Analytics {
   }
 }
 
-module.exports = new Analytics();
+export default new Analytics();

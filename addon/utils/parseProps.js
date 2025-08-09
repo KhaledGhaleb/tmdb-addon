@@ -1,9 +1,9 @@
-const urlExists = require("url-exists");
-const { decompressFromEncodedURIComponent } = require("lz-string");
-
+import lz from "lz-string";
+import urlExists from "url-exists";
+const { decompressFromEncodedURIComponent } = lz;
 function parseCertification(release_dates, language) {
   return release_dates.results.filter(
-    (releases) => releases.iso_3166_1 == language.split("-")[1],
+    (releases) => releases.iso_3166_1 == language.split("-")[1]
   )[0].release_dates[0].certification;
 }
 
@@ -98,9 +98,9 @@ function parseGenreLink(genres, type, language) {
       name: genre.name,
       category: "Genres",
       url: `stremio:///discover/${encodeURIComponent(
-        process.env.HOST_NAME,
+        process.env.HOST_NAME
       )}%2F${language}%2Fmanifest.json/${type}/tmdb.top?genre=${encodeURIComponent(
-        genre.name,
+        genre.name
       )}`,
     };
   });
@@ -207,7 +207,7 @@ async function parsePoster(type, id, poster, language, rpdbkey) {
 function parseMedia(el, type, genreList = []) {
   const genres = Array.isArray(el.genre_ids)
     ? el.genre_ids.map(
-        (genre) => genreList.find((x) => x.id === genre)?.name || "Unknown",
+        (genre) => genreList.find((x) => x.id === genre)?.name || "Unknown"
       )
     : [];
 
@@ -225,8 +225,8 @@ function parseMedia(el, type, genreList = []) {
           ? el.release_date.substr(0, 4)
           : ""
         : el.first_air_date
-          ? el.first_air_date.substr(0, 4)
-          : "",
+        ? el.first_air_date.substr(0, 4)
+        : "",
     type: type === "movie" ? type : "series",
     description: el.overview,
   };
@@ -253,7 +253,7 @@ async function checkIfExists(rpdbImage) {
   });
 }
 
-module.exports = {
+export {
   parseCertification,
   parseCast,
   parseDirector,

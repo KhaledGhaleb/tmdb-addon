@@ -1,24 +1,30 @@
-const express = require("express");
-const favicon = require("serve-favicon");
-const path = require("path");
-const addon = express();
-const analytics = require("./utils/analytics");
-const { getCatalog } = require("./lib/getCatalog");
-const { getSearch } = require("./lib/getSearch");
-const { getManifest, DEFAULT_LANGUAGE } = require("./lib/getManifest");
-const { getMeta } = require("./lib/getMeta");
-const { getTmdb } = require("./lib/getTmdb");
-const { cacheWrapMeta } = require("./lib/getCache");
-const { getTrending } = require("./lib/getTrending");
-const {
+import path from "path";
+// addon/server.js
+import express from "express";
+import favicon from "serve-favicon";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+import { getMeta } from "./lib/getMeta.js";
+import { getTmdb } from "./lib/getTmdb.js";
+import analytics from "./utils/analytics.js";
+import { getSearch } from "./lib/getSearch.js";
+import { getCatalog } from "./lib/getCatalog.js";
+import { cacheWrapMeta } from "./lib/getCache.js";
+import { getTrending } from "./lib/getTrending.js";
+import { getManifest, DEFAULT_LANGUAGE } from "./lib/getManifest.js";
+import {
   parseConfig,
   getRpdbPoster,
   checkIfExists,
-} = require("./utils/parseProps");
-const { getRequestToken, getSessionId } = require("./lib/getSession");
-const { getFavorites, getWatchList } = require("./lib/getPersonalLists");
-const { blurImage } = require("./utils/imageProcessor");
+} from "./utils/parseProps.js";
+import { blurImage } from "./utils/imageProcessor.js";
+import { getRequestToken, getSessionId } from "./lib/getSession.js";
+import { getFavorites, getWatchList } from "./lib/getPersonalLists.js";
 
+const addon = express();
 addon.use(analytics.middleware);
 addon.use(favicon(path.join(__dirname, "../public/favicon.png")));
 addon.use(express.static(path.join(__dirname, "../public")));
@@ -104,8 +110,8 @@ addon.get(
     const { genre, skip, search } = extra
       ? Object.fromEntries(
           new URLSearchParams(
-            req.url.split("/").pop().split("?")[0].slice(0, -5),
-          ).entries(),
+            req.url.split("/").pop().split("?")[0].slice(0, -5)
+          ).entries()
         )
       : {};
     const page = Math.ceil(skip ? skip / 20 + 1 : undefined) || 1;
@@ -149,18 +155,18 @@ addon.get(
               type,
               el.id.replace("tmdb:", ""),
               language,
-              rpdbkey,
+              rpdbkey
             );
             el.poster = (await checkIfExists(rpdbImage))
               ? rpdbImage
               : el.poster;
             return el;
-          }),
+          })
         );
       } catch (e) {}
     }
     respond(res, metas, cacheOpts);
-  },
+  }
 );
 
 addon.get("/:catalogChoices?/meta/:type/:id.json", async function (req, res) {
@@ -178,7 +184,7 @@ addon.get("/:catalogChoices?/meta/:type/:id.json", async function (req, res) {
         return await getMeta(type, language, tmdbId, rpdbkey, {
           hideEpisodeThumbnails: config.hideEpisodeThumbnails === "true",
         });
-      },
+      }
     );
     const cacheOpts = {
       staleRevalidate: 20 * 24 * 60 * 60,
@@ -201,7 +207,7 @@ addon.get("/:catalogChoices?/meta/:type/:id.json", async function (req, res) {
           return await getMeta(type, language, tmdbId, rpdbkey, {
             hideEpisodeThumbnails: config.hideEpisodeThumbnails === "true",
           });
-        },
+        }
       );
       const cacheOpts = {
         staleRevalidate: 20 * 24 * 60 * 60,
@@ -244,4 +250,4 @@ addon.get("/api/image/blur", async function (req, res) {
   }
 });
 
-module.exports = addon;
+export { addon }; // ✅ ESM export

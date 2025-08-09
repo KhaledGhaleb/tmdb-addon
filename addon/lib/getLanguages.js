@@ -1,5 +1,5 @@
-require("dotenv").config();
-const { MovieDb } = require("moviedb-promise");
+import "dotenv/config";
+import { MovieDb } from "moviedb-promise";
 const moviedb = new MovieDb(process.env.TMDB_API);
 
 async function getLanguages() {
@@ -14,4 +14,4 @@ async function getLanguages() {
   });
 }
 
-module.exports = { getLanguages };
+export { getLanguages };

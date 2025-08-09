@@ -1,5 +1,5 @@
-const axios = require("axios");
-const { getMeta } = require("../lib/getMeta");
+import axios from "axios";
+import { getMeta } from "../lib/getMeta.js";
 
 async function fetchMDBListItems(listId, apiKey, language, page) {
   const offset = page * 20 - 20;
@@ -23,9 +23,9 @@ async function getGenresFromMDBList(listId, apiKey) {
             (item.genre || []).map((g) => {
               if (!g || typeof g !== "string") return null;
               return g.charAt(0).toUpperCase() + g.slice(1).toLowerCase();
-            }),
+            })
           )
-          .filter(Boolean),
+          .filter(Boolean)
       ),
     ].sort();
     return genres;
@@ -43,10 +43,10 @@ async function parseMDBListItems(items, type, genreFilter, language, rpdbkey) {
           .map((g) =>
             typeof g === "string"
               ? g.charAt(0).toUpperCase() + g.slice(1).toLowerCase()
-              : null,
+              : null
           )
-          .filter(Boolean),
-      ),
+          .filter(Boolean)
+      )
     ),
   ].sort();
 
@@ -58,8 +58,8 @@ async function parseMDBListItems(items, type, genreFilter, language, rpdbkey) {
         item.genre.some(
           (g) =>
             typeof g === "string" &&
-            g.toLowerCase() === genreFilter.toLowerCase(),
-        ),
+            g.toLowerCase() === genreFilter.toLowerCase()
+        )
     );
   }
 
@@ -80,7 +80,7 @@ async function parseMDBListItems(items, type, genreFilter, language, rpdbkey) {
       .catch((err) => {
         console.error(`Erro ao buscar metadados para ${item.id}:`, err.message);
         return null;
-      }),
+      })
   );
 
   const metas = (await Promise.all(metaPromises)).filter(Boolean);
@@ -88,4 +88,4 @@ async function parseMDBListItems(items, type, genreFilter, language, rpdbkey) {
   return { metas, availableGenres };
 }
 
-module.exports = { fetchMDBListItems, getGenresFromMDBList, parseMDBListItems };
+export { fetchMDBListItems, getGenresFromMDBList, parseMDBListItems };

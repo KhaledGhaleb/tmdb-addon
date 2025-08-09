@@ -1,9 +1,11 @@
-require("dotenv").config();
-const { MovieDb } = require("moviedb-promise");
+import "dotenv/config";
+import { MovieDb } from "moviedb-promise";
+import { getGenreList } from "./getGenreList.js";
+import { parseMedia } from "../utils/parseProps.js";
+import translations from "../static/translations.json" with { type: "json" };
+
 const moviedb = new MovieDb(process.env.TMDB_API);
-const { getGenreList } = require("./getGenreList");
-const { parseMedia } = require("../utils/parseProps");
-const translations = require("../static/translations.json");
+
 
 function getAllTranslations(key) {
   return Object.values(translations)
@@ -118,7 +120,7 @@ async function getFavorites(type, language, page, genre, sessionId) {
   return fetchFunction(parameters)
     .then((res) => ({
       metas: sortResults(res.results, genre).map((el) =>
-        parseMedia(el, type, genreList),
+        parseMedia(el, type, genreList)
       ),
     }))
     .catch(console.error);
@@ -138,7 +140,7 @@ async function getWatchList(type, language, page, genre, sessionId) {
   return fetchFunction(parameters)
     .then((res) => ({
       metas: sortResults(res.results, genre).map((el) =>
-        parseMedia(el, type, genreList),
+        parseMedia(el, type, genreList)
       ),
     }))
     .catch(console.error);
@@ -152,4 +154,4 @@ function shuffleArray(array) {
   return array;
 }
 
-module.exports = { getFavorites, getWatchList };
+export { getFavorites, getWatchList };

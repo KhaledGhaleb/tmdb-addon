@@ -1,10 +1,10 @@
-require("dotenv").config();
-const axios = require("axios");
+import axios from "axios";
+import "dotenv/config"; // same as require("dotenv").config();
 
 async function getRequestToken() {
   return axios
     .get(
-      `https://api.themoviedb.org/3/authentication/token/new?api_key=${process.env.TMDB_API}`,
+      `https://api.themoviedb.org/3/authentication/token/new?api_key=${process.env.TMDB_API}`
     )
     .then((response) => {
       if (response.data.success) {
@@ -16,7 +16,7 @@ async function getRequestToken() {
 async function getSessionId(requestToken) {
   return axios
     .get(
-      `https://api.themoviedb.org/3/authentication/session/new?api_key=${process.env.TMDB_API}&request_token=${requestToken}`,
+      `https://api.themoviedb.org/3/authentication/session/new?api_key=${process.env.TMDB_API}&request_token=${requestToken}`
     )
     .then((response) => {
       if (response.data.success) {
@@ -25,4 +25,4 @@ async function getSessionId(requestToken) {
     });
 }
 
-module.exports = { getRequestToken, getSessionId };
+export { getRequestToken, getSessionId };

@@ -1,11 +1,28 @@
-require("dotenv").config();
-const { getGenreList } = require("./getGenreList");
-const { getLanguages } = require("./getLanguages");
-const { getGenresFromMDBList } = require("../utils/mdbList");
-const packageJson = require("../../package.json");
-const catalogsTranslations = require("../static/translations.json");
-const CATALOG_TYPES = require("../static/catalog-types.json");
-const DEFAULT_LANGUAGE = "en-US";
+import path from "path";
+import { fileURLToPath } from "url";
+import fs from "fs"; // <-- missing import
+import { getGenreList } from "./getGenreList.js";
+import { getLanguages } from "./getLanguages.js";
+import { getGenresFromMDBList } from "../utils/mdbList.js";
+import "dotenv/config"; // same as require("dotenv").config();
+
+export const DEFAULT_LANGUAGE = "en-US";
+
+// __dirname shim for ESM
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Small helper to read JSON files safely
+function readJson(relPath) {
+  const abs = path.join(__dirname, relPath);
+  const raw = fs.readFileSync(abs, "utf-8");
+  return JSON.parse(raw);
+}
+
+// Load JSONs without import assertions
+const packageJson = readJson("../../package.json");
+const catalogsTranslations = readJson("../static/translations.json");
+const CATALOG_TYPES = readJson("../static/catalog-types.json");
 
 function generateArrayOfYears(maxYears) {
   const max = new Date().getFullYear();
@@ -19,7 +36,7 @@ function generateArrayOfYears(maxYears) {
 
 function setOrderLanguage(language, languagesArray) {
   const languageObj = languagesArray.find(
-    (lang) => lang.iso_639_1 === language,
+    (lang) => lang.iso_639_1 === language
   );
   const fromIndex = languagesArray.indexOf(languageObj);
   const element = languagesArray.splice(fromIndex, 1)[0];
@@ -42,7 +59,7 @@ function createCatalog(
   options,
   tmdbPrefix,
   translatedCatalogs,
-  showInHome = false,
+  showInHome = false
 ) {
   const extra = [];
 
@@ -81,7 +98,9 @@ function createCatalog(
   return {
     id,
     type,
-    name: `${tmdbPrefix ? "TMDB - " : ""}${translatedCatalogs[catalogDef.nameKey]}`,
+    name: `${tmdbPrefix ? "TMDB - " : ""}${
+      translatedCatalogs[catalogDef.nameKey]
+    }`,
     pageSize: 20,
     extra,
   };
@@ -103,7 +122,7 @@ function getOptionsForCatalog(
   catalogDef,
   type,
   showInHome,
-  { years, genres_movie, genres_series, filterLanguages },
+  { years, genres_movie, genres_series, filterLanguages }
 ) {
   if (catalogDef.defaultOptions) return catalogDef.defaultOptions;
 
@@ -168,7 +187,7 @@ async function getManifest(config) {
     (genres) => {
       const sortedGenres = genres.map((el) => el.name).sort();
       return sortedGenres;
-    },
+    }
   );
 
   const languagesArray = await getLanguages();
@@ -194,7 +213,7 @@ async function getManifest(config) {
           catalogDef,
           userCatalog.type,
           userCatalog.showInHome,
-          options,
+          options
         );
 
         return createCatalog(
@@ -204,9 +223,9 @@ async function getManifest(config) {
           catalogOptions,
           tmdbPrefix,
           translatedCatalogs,
-          userCatalog.showInHome,
+          userCatalog.showInHome
         );
-      }),
+      })
   );
 
   if (config.searchEnabled !== "false") {
@@ -286,8 +305,8 @@ function getDefaultCatalogs() {
       id: `tmdb.${id}`,
       type,
       showInHome: true,
-    })),
+    }))
   );
 }
 
-module.exports = { getManifest, DEFAULT_LANGUAGE };
+export { getManifest };

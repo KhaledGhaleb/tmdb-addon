@@ -1,10 +1,13 @@
-require("dotenv").config();
-const { MovieDb } = require("moviedb-promise");
+import "dotenv/config";
+import { MovieDb } from "moviedb-promise";
+import { getGenreList } from "./getGenreList.js";
+import { parseMedia } from "../utils/parseProps.js";
+import * as TL from "transliteration"; // CJS-safe import pattern
+import geminiService from "../utils/gemini-service.js"; // assumes default export
+
+const { transliterate } = TL; // grab the function safely
+
 const moviedb = new MovieDb(process.env.TMDB_API);
-const geminiService = require("../utils/gemini-service");
-const { transliterate } = require("transliteration");
-const { parseMedia } = require("../utils/parseProps");
-const { getGenreList } = require("./getGenreList");
 
 function isNonLatin(text) {
   return /[^\u0000-\u007F]/.test(text);
@@ -50,7 +53,7 @@ async function getSearch(id, type, language, query, config) {
         } catch (error) {
           console.error(
             `Erro ao buscar detalhes para título "${title}":`,
-            error,
+            error
           );
           return null;
         }
@@ -209,4 +212,4 @@ async function getSearch(id, type, language, query, config) {
   return Promise.resolve({ query, metas: searchResults });
 }
 
-module.exports = { getSearch };
+export { getSearch };

@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/select";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import packageJson from "../../../package.json";
+import packageJson from "../../../package.json" with { type: "json" };
 
 const languages = [
   { value: "ab-AB", label: "Abkhazian" },

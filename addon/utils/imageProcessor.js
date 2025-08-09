@@ -1,5 +1,5 @@
-const sharp = require("sharp");
-const axios = require("axios");
+import sharp from "sharp";
+import axios from "axios";
 
 async function blurImage(imageUrl) {
   try {
@@ -16,4 +16,4 @@ async function blurImage(imageUrl) {
   }
 }
 
-module.exports = { blurImage };
+export { blurImage };

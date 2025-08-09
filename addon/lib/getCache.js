@@ -1,6 +1,6 @@
-const cacheManager = require("cache-manager");
-const redisStore = require("cache-manager-ioredis");
-const Redis = require("ioredis");
+import Redis from "ioredis";
+import cacheManager from "cache-manager";
+import redisStore from "cache-manager-ioredis";
 
 const GLOBAL_KEY_PREFIX = "tmdb-addon";
 const META_KEY_PREFIX = `${GLOBAL_KEY_PREFIX}|meta`;
@@ -47,4 +47,4 @@ function cacheWrapMeta(id, method) {
   return cacheWrap(`${META_KEY_PREFIX}:${id}`, method, { ttl: META_TTL });
 }
 
-module.exports = { cacheWrapCatalog, cacheWrapMeta, cache };
+export { cacheWrapCatalog, cacheWrapMeta, cache };

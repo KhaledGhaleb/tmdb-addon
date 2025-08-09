@@ -22,6 +22,8 @@ interface AddonConfig {
   hideInCinemaTag?: boolean;
   castCount?: number;
   numYears?: number;
+  minVotesMovies?: number;
+  minVotesTV?: number;
 }
 
 export function generateAddonUrl(config: AddonConfig): string {
@@ -49,6 +51,9 @@ export function generateAddonUrl(config: AddonConfig): string {
     castCount:
       typeof config.castCount === 'number' ? config.castCount : undefined,
     numYears: typeof config.numYears === 'number' ? config.numYears : 100,
+    minVotesMovies:
+      typeof config.minVotesMovies === 'number' ? config.minVotesMovies : 100,
+    minVotesTV: typeof config.minVotesTV === 'number' ? config.minVotesTV : 10,
   };
 
   const cleanConfig = Object.fromEntries(

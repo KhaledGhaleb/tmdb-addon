@@ -25,6 +25,8 @@ export type ConfigContextType = {
   hideInCinemaTag: boolean;
   castCount: number | undefined;
   numYears: number;
+  minVotesMovies: number;
+  minVotesTV: number;
   setRpdbkey: (rpdbkey: string) => void;
   setGeminiKey: (geminikey: string) => void;
   setMdblistkey: (mdblistkey: string) => void;
@@ -43,6 +45,8 @@ export type ConfigContextType = {
   setHideInCinemaTag: (hide: boolean) => void;
   setCastCount: (count: number | undefined) => void;
   setNumYears: (count: number) => void;
+  setMinVotesMovies: (count: number) => void;
+  setMinVotesTV: (count: number) => void;
   loadConfigFromUrl: () => void;
 };
 

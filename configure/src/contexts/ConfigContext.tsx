@@ -36,6 +36,8 @@ export function ConfigProvider({ children }: { children: React.ReactNode }) {
   const [hideInCinemaTag, setHideInCinemaTag] = useState(false);
   const [castCount, setCastCount] = useState<number | undefined>(5);
   const [numYears, setNumYears] = useState<number>(30); // default 10 years
+  const [minVotesMovies, setMinVotesMovies] = useState<number>(50); // default 10 years
+  const [minVotesTV, setMinVotesTV] = useState<number>(10); // default 10 years
 
   const loadDefaultCatalogs = useCallback(() => {
     const defaultCatalogs = baseCatalogs.map((catalog) => ({
@@ -74,7 +76,11 @@ export function ConfigProvider({ children }: { children: React.ReactNode }) {
             ? undefined
             : Number(config.castCount)
         );
-      if (config.numYears !== undefined) setNumYears(Number(config.castCount));
+      if (config.numYears !== undefined) setNumYears(Number(config.numYears));
+      if (config.minVotesTV !== undefined)
+        setMinVotesTV(Number(config.minVotesTV));
+      if (config.minVotesMovies !== undefined)
+        setMinVotesMovies(Number(minVotesMovies));
 
       if (config.catalogs) {
         const catalogsWithNames = config.catalogs.map((catalog) => {
@@ -136,6 +142,8 @@ export function ConfigProvider({ children }: { children: React.ReactNode }) {
     hideInCinemaTag,
     castCount,
     numYears,
+    minVotesMovies,
+    minVotesTV,
     setRpdbkey,
     setGeminiKey,
     setMdblistkey,
@@ -152,6 +160,8 @@ export function ConfigProvider({ children }: { children: React.ReactNode }) {
     setHideInCinemaTag,
     setCastCount,
     setNumYears,
+    setMinVotesMovies,
+    setMinVotesTV,
     loadConfigFromUrl,
   };
 

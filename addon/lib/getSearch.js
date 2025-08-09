@@ -7,7 +7,7 @@ import geminiService from '../utils/gemini-service.js'; // assumes default expor
 
 const { transliterate } = TL; // grab the function safely
 
-const moviedb = new MovieDb(process.env.TMDB_API);
+const movieDb = new MovieDb(process.env.TMDB_API);
 
 function isNonLatin(text) {
   return /[^\u0000-\u007F]/.test(text);
@@ -26,12 +26,20 @@ const withinYears = (dateStr, numYears) => {
 
 async function getSearch(id, type, language, query, config) {
   // optional knobs (from config or hardcode)
-  const MIN_VOTES = config.minVotes ?? 100; // e.g. 50
+  const MIN_VOTES_MOVIES = config.minVotesMovies ?? 100; // e.g. 50
+  const MIN_VOTES_TV = config.minVotesTV ?? 100; // e.g. 50
   const MIN_POP = config.minPopularity ?? 0; // e.g. 0
   const YEARS_WIN = config.numYears ?? 10; // 1..120 or undefined
   const SORT_BY = config.sortBy ?? 'popularity'; // 'popularity' | 'vote_average'
   const SORT_DIR = config.sortDir ?? 'desc'; // 'desc' | 'asc'
-  console.log(MIN_VOTES, MIN_POP, YEARS_WIN, SORT_BY, SORT_DIR);
+  console.log(
+    MIN_VOTES_MOVIES,
+    MIN_VOTES_TV,
+    MIN_POP,
+    YEARS_WIN,
+    SORT_BY,
+    SORT_DIR
+  );
   // small sorter
   const sorters = {
     popularity: (a, b) =>
@@ -48,7 +56,7 @@ async function getSearch(id, type, language, query, config) {
   async function filterSortTvItems(movieDb, items) {
     let out = (items ?? [])
       .filter((r) => (config.includeAdult ? true : !r.adult))
-      .filter((r) => (r.vote_count ?? 0) >= MIN_VOTES)
+      .filter((r) => (r.vote_count ?? 0) >= MIN_VOTES_TV)
       .filter((r) => (r.popularity ?? 0) >= MIN_POP)
       .filter((r) => withinYears(r.first_air_date, YEARS_WIN));
 
@@ -102,12 +110,12 @@ async function getSearch(id, type, language, query, config) {
           };
 
           if (type === 'movie') {
-            const res = await moviedb.searchMovie(parameters);
+            const res = await movieDb.searchMovie(parameters);
             if (res.results && res.results.length > 0) {
               return parseMedia(res.results[0], 'movie', genreList);
             }
           } else {
-            const res = await moviedb.searchTv(parameters);
+            const res = await movieDb.searchTv(parameters);
             if (res.results && res.results.length > 0) {
               return parseMedia(res.results[0], 'tv', genreList);
             }
@@ -167,11 +175,11 @@ async function getSearch(id, type, language, query, config) {
 
     if (type === 'movie') {
       try {
-        const res = await moviedb.searchMovie(parameters);
+        const res = await movieDb.searchMovie(parameters);
         // console.log('res', res);
         let items = (res?.results ?? [])
           .filter((r) => (config.includeAdult ? true : !r.adult))
-          .filter((r) => (r.vote_count ?? 0) >= MIN_VOTES)
+          .filter((r) => (r.vote_count ?? 0) >= MIN_VOTES_MOVIES)
           .filter((r) => (r.popularity ?? 0) >= MIN_POP)
           .filter((r) => withinYears(r.release_date, YEARS_WIN))
           .sort(sorters[SORT_BY]);
@@ -197,7 +205,7 @@ async function getSearch(id, type, language, query, config) {
       //     .catch(console.error);
       // }
 
-      await moviedb
+      await movieDb
         .searchPerson({ query: query, language })
         .then(async (res) => {
           // console.log('person res', res);
@@ -210,7 +218,7 @@ async function getSearch(id, type, language, query, config) {
 
           if (!best) return;
           // console.log('best', best);
-          const credits = await moviedb.personMovieCredits({
+          const credits = await movieDb.personMovieCredits({
             id: best.id,
             language,
           });
@@ -223,7 +231,7 @@ async function getSearch(id, type, language, query, config) {
           // Base filtering (cheap local checks first)
           let items = merged
             .filter((el) => (config.includeAdult ? true : !el.adult))
-            .filter((el) => (el.vote_count ?? 0) >= MIN_VOTES)
+            .filter((el) => (el.vote_count ?? 0) >= MIN_VOTES_MOVIES)
             .filter((el) => (el.popularity ?? 0) >= MIN_POP)
             .filter((el) => withinYears(el.release_date, YEARS_WIN));
           // Sort (popularity desc/asc)
@@ -248,12 +256,12 @@ async function getSearch(id, type, language, query, config) {
         })
         .catch(console.error);
     } else {
-      await moviedb
+      await movieDb
         .searchTv(parameters)
         .then(async (res) => {
           console.log('res', res);
           const filtered = await filterSortTvItems(
-            moviedb,
+            movieDb,
             res.results,
             config
           );
@@ -262,7 +270,7 @@ async function getSearch(id, type, language, query, config) {
         })
         .catch(console.error);
 
-      await moviedb
+      await movieDb
         .searchPerson({ query, language })
         .then(async (res) => {
           const people = res?.results ?? [];
@@ -274,7 +282,7 @@ async function getSearch(id, type, language, query, config) {
             .sort((a, b) => (b.popularity ?? 0) - (a.popularity ?? 0))[0];
           if (!best) return;
 
-          const credits = await moviedb.personTvCredits({
+          const credits = await movieDb.personTvCredits({
             id: best.id,
             language,
           });
@@ -290,7 +298,7 @@ async function getSearch(id, type, language, query, config) {
           const merged = [...castUseful, ...crewDW];
           console.log('merged', merged);
 
-          const filtered = await filterSortTvItems(moviedb, merged);
+          const filtered = await filterSortTvItems(movieDb, merged);
           pushTvParsed(filtered, searchResults, genreList);
 
           console.log('searchResults TV', searchResults);

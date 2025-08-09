@@ -12,6 +12,8 @@ const Others = () => {
   const { hideInCinemaTag, setHideInCinemaTag } = useConfig();
   const { castCount, setCastCount } = useConfig();
   const { numYears, setNumYears } = useConfig();
+  const { minVotesMovies, setMinVotesMovies } = useConfig();
+  const { minVotesTV, setMinVotesTV } = useConfig();
 
   return (
     <main className="md:p-12 px-2 py-12">
@@ -125,6 +127,50 @@ const Others = () => {
               className="w-40"
             />
             <span className="text-sm text-gray-700 mt-1">{numYears} years</span>
+          </div>
+        </Card>
+        <Card className="flex flex-row items-center justify-between p-6">
+          <div className="space-y-0.5">
+            <h1 className="text-sm font-semibold mb-1">Number of Years</h1>
+            <p className="text-gray-500 text-sm">
+              Select the Min Votes per Movie (between 0 and 10000)
+            </p>
+          </div>
+
+          <div className="flex flex-col items-end">
+            <input
+              type="range"
+              min={0}
+              max={10000}
+              value={minVotesMovies}
+              onChange={(e) => setMinVotesMovies(Number(e.target.value))}
+              className="w-40"
+            />
+            <span className="text-sm text-gray-700 mt-1">
+              {minVotesMovies} votes
+            </span>
+          </div>
+        </Card>
+        <Card className="flex flex-row items-center justify-between p-6">
+          <div className="space-y-0.5">
+            <h1 className="text-sm font-semibold mb-1">Number of Years</h1>
+            <p className="text-gray-500 text-sm">
+              Select the Min Votes per TV series (between 0 and 10000)
+            </p>
+          </div>
+
+          <div className="flex flex-col items-end">
+            <input
+              type="range"
+              min={0}
+              max={10000}
+              value={minVotesTV}
+              onChange={(e) => setMinVotesTV(Number(e.target.value))}
+              className="w-40"
+            />
+            <span className="text-sm text-gray-700 mt-1">
+              {minVotesTV} votes
+            </span>
           </div>
         </Card>
         <Card className="p-6">

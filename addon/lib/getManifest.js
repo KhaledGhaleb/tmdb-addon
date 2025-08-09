@@ -36,7 +36,7 @@ function generateArrayOfYears(maxYears) {
 
 function setOrderLanguage(language, languagesArray) {
   const languageObj = languagesArray.find(
-    (lang) => lang.iso_639_1 === language
+    (lang) => lang.iso_639_1 === language,
   );
   const fromIndex = languagesArray.indexOf(languageObj);
   const element = languagesArray.splice(fromIndex, 1)[0];
@@ -59,7 +59,7 @@ function createCatalog(
   options,
   tmdbPrefix,
   translatedCatalogs,
-  showInHome = false
+  showInHome = false,
 ) {
   const extra = [];
 
@@ -122,7 +122,7 @@ function getOptionsForCatalog(
   catalogDef,
   type,
   showInHome,
-  { years, genres_movie, genres_series, filterLanguages }
+  { years, genres_movie, genres_series, filterLanguages },
 ) {
   if (catalogDef.defaultOptions) return catalogDef.defaultOptions;
 
@@ -164,12 +164,14 @@ async function createMDBListCatalog(userCatalog, mdblistKey) {
 }
 
 async function getManifest(config) {
+  console.log("getManifest", config);
   const language = config.language || DEFAULT_LANGUAGE;
   const tmdbPrefix = config.tmdbPrefix === "true";
   const provideImdbId = config.provideImdbId === "true";
   const sessionId = config.sessionId;
   const userCatalogs = config.catalogs || getDefaultCatalogs();
   const translatedCatalogs = loadTranslations(language);
+  const numYears = config.numYears;
 
   const stremioAddonsConfig = {
     issuer: "https://stremio-addons.net",
@@ -177,7 +179,7 @@ async function getManifest(config) {
       "eyJhbGciOiJkaXIiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2In0..DTiTHmYyIbuTMPJB35cqsw.S2C6xuCL9OoHJbtX97v-2w3IM4iFqr2Qy4xRRlvyzIY2fZAcwmm6JUMdsc2LSTigIPQeGPomaqX53ECt23cJKuH-IKs4hHLH4sLYRZNL_VC0YefQNrWjMRZ75Yz-bVx3.DJZBtIb1bOCq6Z62AMUGvw",
   };
 
-  const years = generateArrayOfYears(20);
+  const years = generateArrayOfYears(numYears);
   const genres_movie = await getGenreList(language, "movie").then((genres) => {
     const sortedGenres = genres.map((el) => el.name).sort();
     return sortedGenres;
@@ -187,7 +189,7 @@ async function getManifest(config) {
     (genres) => {
       const sortedGenres = genres.map((el) => el.name).sort();
       return sortedGenres;
-    }
+    },
   );
 
   const languagesArray = await getLanguages();
@@ -213,7 +215,7 @@ async function getManifest(config) {
           catalogDef,
           userCatalog.type,
           userCatalog.showInHome,
-          options
+          options,
         );
 
         return createCatalog(
@@ -223,9 +225,9 @@ async function getManifest(config) {
           catalogOptions,
           tmdbPrefix,
           translatedCatalogs,
-          userCatalog.showInHome
+          userCatalog.showInHome,
         );
-      })
+      }),
   );
 
   if (config.searchEnabled !== "false") {
@@ -305,7 +307,7 @@ function getDefaultCatalogs() {
       id: `tmdb.${id}`,
       type,
       showInHome: true,
-    }))
+    })),
   );
 }
 

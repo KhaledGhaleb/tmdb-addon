@@ -53,7 +53,7 @@ async function getSearch(id, type, language, query, config) {
         } catch (error) {
           console.error(
             `Erro ao buscar detalhes para título "${title}":`,
-            error
+            error,
           );
           return null;
         }

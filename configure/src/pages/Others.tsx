@@ -11,6 +11,7 @@ const Others = () => {
   const { tmdbPrefix, setTmdbPrefix } = useConfig();
   const { hideInCinemaTag, setHideInCinemaTag } = useConfig();
   const { castCount, setCastCount } = useConfig();
+  const { numYears, setNumYears } = useConfig();
 
   return (
     <main className="md:p-12 px-2 py-12">
@@ -105,6 +106,26 @@ const Others = () => {
             <option value={15}>15</option>
             <option value="Unlimited">Unlimited</option>
           </select>
+        </Card>
+        <Card className="flex flex-row items-center justify-between p-6">
+          <div className="space-y-0.5">
+            <h1 className="text-sm font-semibold mb-1">Number of Years</h1>
+            <p className="text-gray-500 text-sm">
+              Select the number of years (between 1 and 120)
+            </p>
+          </div>
+
+          <div className="flex flex-col items-end">
+            <input
+              type="range"
+              min={1}
+              max={120}
+              value={numYears}
+              onChange={(e) => setNumYears(Number(e.target.value))}
+              className="w-40"
+            />
+            <span className="text-sm text-gray-700 mt-1">{numYears} years</span>
+          </div>
         </Card>
         <Card className="p-6">
           <AgeRatingSelect />

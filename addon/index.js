@@ -87,6 +87,7 @@ addon.get("/:catalogChoices?/configure", function (req, res) {
 });
 
 addon.get("/:catalogChoices?/manifest.json", async function (req, res) {
+  console.log("manifest.json", req.params);
   const { catalogChoices } = req.params;
   const config = parseConfig(catalogChoices) || {};
   const manifest = await getManifest(config);
@@ -110,8 +111,8 @@ addon.get(
     const { genre, skip, search } = extra
       ? Object.fromEntries(
           new URLSearchParams(
-            req.url.split("/").pop().split("?")[0].slice(0, -5)
-          ).entries()
+            req.url.split("/").pop().split("?")[0].slice(0, -5),
+          ).entries(),
         )
       : {};
     const page = Math.ceil(skip ? skip / 20 + 1 : undefined) || 1;
@@ -155,18 +156,18 @@ addon.get(
               type,
               el.id.replace("tmdb:", ""),
               language,
-              rpdbkey
+              rpdbkey,
             );
             el.poster = (await checkIfExists(rpdbImage))
               ? rpdbImage
               : el.poster;
             return el;
-          })
+          }),
         );
       } catch (e) {}
     }
     respond(res, metas, cacheOpts);
-  }
+  },
 );
 
 addon.get("/:catalogChoices?/meta/:type/:id.json", async function (req, res) {
@@ -184,7 +185,7 @@ addon.get("/:catalogChoices?/meta/:type/:id.json", async function (req, res) {
         return await getMeta(type, language, tmdbId, rpdbkey, {
           hideEpisodeThumbnails: config.hideEpisodeThumbnails === "true",
         });
-      }
+      },
     );
     const cacheOpts = {
       staleRevalidate: 20 * 24 * 60 * 60,
@@ -207,7 +208,7 @@ addon.get("/:catalogChoices?/meta/:type/:id.json", async function (req, res) {
           return await getMeta(type, language, tmdbId, rpdbkey, {
             hideEpisodeThumbnails: config.hideEpisodeThumbnails === "true",
           });
-        }
+        },
       );
       const cacheOpts = {
         staleRevalidate: 20 * 24 * 60 * 60,

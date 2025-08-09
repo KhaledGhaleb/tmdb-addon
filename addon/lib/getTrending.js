@@ -22,10 +22,10 @@ async function getTrending(type, language, page, genre, config) {
           .catch((err) => {
             console.error(
               `Erro ao buscar metadados para ${item.id}:`,
-              err.message
+              err.message,
             );
             return null;
-          })
+          }),
       );
 
       const metas = (await Promise.all(metaPromises)).filter(Boolean);

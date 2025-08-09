@@ -31,7 +31,7 @@ function getThumbnailUrl(stillPath, hideEpisodeThumbnails) {
 
   if (hideEpisodeThumbnails) {
     return `${process.env.HOST_NAME}/api/image/blur?url=${encodeURIComponent(
-      baseImageUrl
+      baseImageUrl,
     )}`;
   }
 
@@ -60,7 +60,7 @@ async function getEpisodes(language, tmdbId, imdb_id, seasons, config = {}) {
               episode: index + 1,
               thumbnail: getThumbnailUrl(
                 episode.still_path,
-                hideEpisodeThumbnails
+                hideEpisodeThumbnails,
               ),
               overview: episode.overview,
               description: episode.overview,
@@ -71,9 +71,9 @@ async function getEpisodes(language, tmdbId, imdb_id, seasons, config = {}) {
               released: difOrder.watchOrderOnly
                 ? new Date(Date.parse(group.episodes[0].air_date) + index)
                 : new Date(Date.parse(episode.air_date) + index),
-            }))
+            })),
           )
-          .reduce((a, b) => a.concat(b), [])
+          .reduce((a, b) => a.concat(b), []),
       )
       .catch(console.error);
   } else {
@@ -97,16 +97,16 @@ async function getEpisodes(language, tmdbId, imdb_id, seasons, config = {}) {
                     episode: index + 1,
                     thumbnail: getThumbnailUrl(
                       episode.still_path,
-                      hideEpisodeThumbnails
+                      hideEpisodeThumbnails,
                     ),
                     overview: episode.overview,
                     description: episode.overview,
                     rating: episode.vote_average.toString(),
                     firstAired: new Date(
-                      Date.parse(episode.air_date) + episode.season_number
+                      Date.parse(episode.air_date) + episode.season_number,
                     ),
                     released: new Date(
-                      Date.parse(episode.air_date) + episode.season_number
+                      Date.parse(episode.air_date) + episode.season_number,
                     ),
                   });
                 });
@@ -114,7 +114,7 @@ async function getEpisodes(language, tmdbId, imdb_id, seasons, config = {}) {
             });
           })
           .catch(console.error);
-      })
+      }),
     );
     return episodes;
   }

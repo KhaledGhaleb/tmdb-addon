@@ -6,7 +6,6 @@ import translations from "../static/translations.json" with { type: "json" };
 
 const moviedb = new MovieDb(process.env.TMDB_API);
 
-
 function getAllTranslations(key) {
   return Object.values(translations)
     .map((lang) => lang[key])
@@ -120,7 +119,7 @@ async function getFavorites(type, language, page, genre, sessionId) {
   return fetchFunction(parameters)
     .then((res) => ({
       metas: sortResults(res.results, genre).map((el) =>
-        parseMedia(el, type, genreList)
+        parseMedia(el, type, genreList),
       ),
     }))
     .catch(console.error);
@@ -140,7 +139,7 @@ async function getWatchList(type, language, page, genre, sessionId) {
   return fetchFunction(parameters)
     .then((res) => ({
       metas: sortResults(res.results, genre).map((el) =>
-        parseMedia(el, type, genreList)
+        parseMedia(el, type, genreList),
       ),
     }))
     .catch(console.error);

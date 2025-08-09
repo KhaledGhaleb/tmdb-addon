@@ -49,7 +49,7 @@ const buildLinks = (
   genres,
   credits,
   language,
-  castCount
+  castCount,
 ) => [
   Utils.parseImdbLink(imdbRating, imdbId),
   Utils.parseShareLink(title, imdbId, type),
@@ -72,7 +72,7 @@ const buildMovieResponse = async (
   language,
   tmdbId,
   rpdbkey,
-  config = {}
+  config = {},
 ) => {
   const [poster, logo, imdbRatingRaw] = await Promise.all([
     Utils.parsePoster(type, tmdbId, res.poster_path, language, rpdbkey),
@@ -120,7 +120,7 @@ const buildMovieResponse = async (
       res.genres,
       res.credits,
       language,
-      castCount
+      castCount,
     ),
     behaviorHints: {
       defaultVideoId: res.imdb_id ? res.imdb_id : `tmdb:${res.id}`,
@@ -150,7 +150,7 @@ const buildTvResponse = async (
   language,
   tmdbId,
   rpdbkey,
-  config = {}
+  config = {},
 ) => {
   const runtime =
     res.episode_run_time?.[0] ??
@@ -164,7 +164,7 @@ const buildTvResponse = async (
       res.external_ids?.tvdb_id,
       res.id,
       language,
-      res.original_language
+      res.original_language,
     ).catch((e) => {
       console.warn(`Erro ao buscar logo para série ${tmdbId}:`, e.message);
       return null;
@@ -207,7 +207,7 @@ const buildTvResponse = async (
     releaseInfo: Utils.parseYear(
       res.status,
       res.first_air_date,
-      res.last_air_date
+      res.last_air_date,
     ),
     videos: episodes || [],
     links: buildLinks(
@@ -218,7 +218,7 @@ const buildTvResponse = async (
       res.genres,
       res.credits,
       language,
-      castCount
+      castCount,
     ),
     trailers: Utils.parseTrailers(res.videos),
     trailerStreams: Utils.parseTrailerStream(res.videos),
@@ -240,7 +240,7 @@ const buildTvResponse = async (
       tmdbId,
       response.imdb_id,
       { meta: response },
-      response.name
+      response.name,
     );
   }
 
@@ -259,10 +259,10 @@ async function getMeta(type, language, tmdbId, rpdbkey, config = {}) {
   try {
     const meta = await (type === "movie"
       ? fetchMovieData(tmdbId, language).then((res) =>
-          buildMovieResponse(res, type, language, tmdbId, rpdbkey, config)
+          buildMovieResponse(res, type, language, tmdbId, rpdbkey, config),
         )
       : fetchTvData(tmdbId, language).then((res) =>
-          buildTvResponse(res, type, language, tmdbId, rpdbkey, config)
+          buildTvResponse(res, type, language, tmdbId, rpdbkey, config),
         ));
 
     cache.set(cacheKey, { data: meta, timestamp: Date.now() });

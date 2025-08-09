@@ -20,7 +20,7 @@ async function getCatalog(type, language, page, id, genre, config) {
       type,
       genre,
       language,
-      config.rpdbkey
+      config.rpdbkey,
     );
 
     return parseResults;
@@ -34,7 +34,7 @@ async function getCatalog(type, language, page, id, genre, config) {
     id,
     genre,
     genreList,
-    config
+    config,
   );
 
   const fetchFunction =
@@ -50,10 +50,10 @@ async function getCatalog(type, language, page, id, genre, config) {
           .catch((err) => {
             console.error(
               `Erro ao buscar metadados para ${item.id}:`,
-              err.message
+              err.message,
             );
             return null;
-          })
+          }),
       );
 
       const metas = (await Promise.all(metaPromises)).filter(Boolean);
@@ -70,7 +70,7 @@ async function buildParameters(
   id,
   genre,
   genreList,
-  config
+  config,
 ) {
   const languages = await getLanguages();
   const parameters = { language, page, "vote_count.gte": 10 };

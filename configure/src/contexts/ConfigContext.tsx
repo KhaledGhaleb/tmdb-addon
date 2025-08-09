@@ -1,4 +1,10 @@
-import React, { createContext, useCallback, useContext, useEffect, useState } from "react";
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import {
   ConfigContext,
   type ConfigContextType,
@@ -29,6 +35,7 @@ export function ConfigProvider({ children }: { children: React.ReactNode }) {
   const [searchEnabled, setSearchEnabled] = useState<boolean>(true);
   const [hideInCinemaTag, setHideInCinemaTag] = useState(false);
   const [castCount, setCastCount] = useState<number | undefined>(5);
+  const [numYears, setNumYears] = useState<number>(30); // default 10 years
 
   const loadDefaultCatalogs = useCallback(() => {
     const defaultCatalogs = baseCatalogs.map((catalog) => ({
@@ -67,6 +74,7 @@ export function ConfigProvider({ children }: { children: React.ReactNode }) {
             ? undefined
             : Number(config.castCount),
         );
+      if (config.numYears !== undefined) setNumYears(Number(config.castCount));
 
       if (config.catalogs) {
         const catalogsWithNames = config.catalogs.map((catalog) => {
@@ -100,7 +108,7 @@ export function ConfigProvider({ children }: { children: React.ReactNode }) {
       console.error("Error loading config from URL:", error);
       loadDefaultCatalogs();
     }
-   }, [loadDefaultCatalogs]); // include because it’s called here
+  }, [loadDefaultCatalogs]); // include because it’s called here
 
   useEffect(() => {
     const path = window.location.pathname;
@@ -127,6 +135,7 @@ export function ConfigProvider({ children }: { children: React.ReactNode }) {
     searchEnabled,
     hideInCinemaTag,
     castCount,
+    numYears,
     setRpdbkey,
     setGeminiKey,
     setMdblistkey,
@@ -142,6 +151,7 @@ export function ConfigProvider({ children }: { children: React.ReactNode }) {
     setSearchEnabled,
     setHideInCinemaTag,
     setCastCount,
+    setNumYears,
     loadConfigFromUrl,
   };
 

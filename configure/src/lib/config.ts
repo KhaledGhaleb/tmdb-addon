@@ -21,6 +21,7 @@ interface AddonConfig {
   }>;
   hideInCinemaTag?: boolean;
   castCount?: number;
+  numYears?: number;
 }
 
 export function generateAddonUrl(config: AddonConfig): string {
@@ -38,7 +39,7 @@ export function generateAddonUrl(config: AddonConfig): string {
         name,
         showInHome,
       })),
-    includeAdult: config.includeAdult === true ? "true" : undefined,
+    includeAdult: config.includeAdult === true ? "true" : false,
     provideImdbId: config.provideImdbId === true ? "true" : undefined,
     tmdbPrefix: config.tmdbPrefix === true ? "true" : undefined,
     hideEpisodeThumbnails:
@@ -47,6 +48,7 @@ export function generateAddonUrl(config: AddonConfig): string {
     hideInCinemaTag: config.hideInCinemaTag === true ? "true" : undefined,
     castCount:
       typeof config.castCount === "number" ? config.castCount : undefined,
+    numYears: typeof config.numYears === "number" ? config.numYears : 100,
   };
 
   const cleanConfig = Object.fromEntries(

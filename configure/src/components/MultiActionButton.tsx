@@ -9,7 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { generateAddonUrl } from "@/lib/config";
-import { useConfig } from "@/contexts/ConfigContext";
+import { useConfig } from "@/contexts/use-config";
 
 export function MultiActionButton() {
   const { toast } = useToast();

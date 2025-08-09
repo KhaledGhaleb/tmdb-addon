@@ -3,7 +3,7 @@ import { createContext } from "react";
 export type CatalogConfig = {
   id: string;
   type: string;
-  name?: string;
+  name: string;
   showInHome: boolean;
   enabled: boolean;
 };

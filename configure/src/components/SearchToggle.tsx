@@ -1,5 +1,5 @@
 import { Switch } from "@/components/ui/switch";
-import { useConfig } from "@/contexts/ConfigContext";
+import { useConfig } from "@/contexts/use-config";
 import { Card } from "@/components/ui/card";
 
 export function SearchToggle() {

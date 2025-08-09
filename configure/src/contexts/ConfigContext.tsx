@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useCallback, useContext, useEffect, useState } from "react";
 import {
   ConfigContext,
   type ConfigContextType,
@@ -30,16 +30,16 @@ export function ConfigProvider({ children }: { children: React.ReactNode }) {
   const [hideInCinemaTag, setHideInCinemaTag] = useState(false);
   const [castCount, setCastCount] = useState<number | undefined>(5);
 
-  const loadDefaultCatalogs = () => {
+  const loadDefaultCatalogs = useCallback(() => {
     const defaultCatalogs = baseCatalogs.map((catalog) => ({
       ...catalog,
       enabled: true,
       showInHome: true,
     }));
     setCatalogs(defaultCatalogs);
-  };
+  }, []); // stable: only uses module constants + setCatalogs
 
-  const loadConfigFromUrl = () => {
+  const loadConfigFromUrl = useCallback(() => {
     try {
       const path = window.location.pathname.split("/")[1];
       const decompressedConfig = decompressFromEncodedURIComponent(path);
@@ -100,7 +100,7 @@ export function ConfigProvider({ children }: { children: React.ReactNode }) {
       console.error("Error loading config from URL:", error);
       loadDefaultCatalogs();
     }
-  };
+   }, [loadDefaultCatalogs]); // include because it’s called here
 
   useEffect(() => {
     const path = window.location.pathname;
@@ -109,7 +109,7 @@ export function ConfigProvider({ children }: { children: React.ReactNode }) {
     } else {
       loadDefaultCatalogs();
     }
-  }, []);
+  }, [loadConfigFromUrl, loadDefaultCatalogs]);
 
   const value = {
     rpdbkey,
@@ -150,4 +150,4 @@ export function ConfigProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
-export const useConfig = () => useContext(ConfigContext);
+// export const useConfig = () => useContext(ConfigContext);

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useConfig } from "@/contexts/ConfigContext";
+import { useConfig } from "@/contexts/use-config";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { DialogClose } from "@/components/ui/dialog";

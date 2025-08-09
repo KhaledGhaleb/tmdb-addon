@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useConfig } from "@/contexts/ConfigContext";
+import { useConfig } from "@/contexts/use-config";
 import { baseCatalogs, authCatalogs, streamingCatalogs } from "@/data/catalogs";
 import {
   DndContext,

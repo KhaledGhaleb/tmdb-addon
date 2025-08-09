@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { useConfig } from "@/contexts/ConfigContext";
+import { useConfig } from "@/contexts/use-config";
 import { Button } from "@/components/ui/button";
 import { DialogClose } from "@/components/ui/dialog";
 import { Alert, AlertDescription } from "@/components/ui/alert";

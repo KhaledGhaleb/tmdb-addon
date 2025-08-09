@@ -1,4 +1,4 @@
-import { useConfig } from "@/contexts/ConfigContext";
+import { useConfig } from "@/contexts/use-config";
 import { KoFiDialog } from "react-kofi";
 import {
   Select,

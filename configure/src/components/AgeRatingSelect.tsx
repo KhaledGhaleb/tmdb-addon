@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { ageRatings } from "@/data/ageRatings";
-import { useConfig } from "@/contexts/ConfigContext";
+import { useConfig } from "@/contexts/use-config";
 import { Info } from "lucide-react";
 
 export function AgeRatingSelect() {

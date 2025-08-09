@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
-import { useConfig } from "@/contexts/ConfigContext";
+import { useConfig } from "@/contexts/use-config";
 import { AgeRatingSelect } from "@/components/AgeRatingSelect";
 import { SearchToggle } from "@/components/SearchToggle";
 

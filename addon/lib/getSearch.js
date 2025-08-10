@@ -32,14 +32,14 @@ async function getSearch(id, type, language, query, config) {
   const YEARS_WIN = config.numYears ?? 10; // 1..120 or undefined
   const SORT_BY = config.sortBy ?? 'popularity'; // 'popularity' | 'vote_average'
   const SORT_DIR = config.sortDir ?? 'desc'; // 'desc' | 'asc'
-  console.log(
-    MIN_VOTES_MOVIES,
-    MIN_VOTES_TV,
-    MIN_POP,
-    YEARS_WIN,
-    SORT_BY,
-    SORT_DIR
-  );
+  // console.log(
+  //   MIN_VOTES_MOVIES,
+  //   MIN_VOTES_TV,
+  //   MIN_POP,
+  //   YEARS_WIN,
+  //   SORT_BY,
+  //   SORT_DIR
+  // );
   // small sorter
   const sorters = {
     popularity: (a, b) =>
@@ -59,16 +59,6 @@ async function getSearch(id, type, language, query, config) {
       .filter((r) => (r.vote_count ?? 0) >= MIN_VOTES_TV)
       .filter((r) => (r.popularity ?? 0) >= MIN_POP)
       .filter((r) => withinYears(r.first_air_date, YEARS_WIN));
-
-    // if (config.ageRating) {
-    //   const allowed = TV_CERTS[config.ageRating];
-    //   const verdicts = await Promise.allSettled(
-    //     out.map((el) => tvMatchesUSCert(movieDb, el.id, allowed))
-    //   );
-    //   out = out.filter(
-    //     (_, i) => verdicts[i].status === 'fulfilled' && verdicts[i].value === true
-    //   );
-    // }
 
     out.sort(sorters[SORT_BY]);
     return out;
@@ -139,71 +129,182 @@ async function getSearch(id, type, language, query, config) {
 
   if (searchResults.length === 0) {
     const genreList = await getGenreList(language, type);
-    console.log('genreList', genreList);
+    // console.log('genreList', genreList);
     const parameters = {
       query: query,
       language,
       include_adult: config.includeAdult,
     };
 
-    if (config.ageRating) {
-      parameters.certification_country = 'US';
-      switch (config.ageRating) {
-        case 'G':
-          parameters.certification = type === 'movie' ? 'G' : 'TV-G';
-          break;
-        case 'PG':
-          parameters.certification =
-            type === 'movie'
-              ? ['G', 'PG'].join('|')
-              : ['TV-G', 'TV-PG'].join('|');
-          break;
-        case 'PG-13':
-          parameters.certification =
-            type === 'movie'
-              ? ['G', 'PG', 'PG-13'].join('|')
-              : ['TV-G', 'TV-PG', 'TV-14'].join('|');
-          break;
-        case 'R':
-          parameters.certification =
-            type === 'movie'
-              ? ['G', 'PG', 'PG-13', 'R'].join('|')
-              : ['TV-G', 'TV-PG', 'TV-14', 'TV-MA'].join('|');
-          break;
+    // Return the US certification string (e.g., "PG-13") or null
+    async function getUSMovieCert(movieDb, id) {
+      try {
+        const data = await movieDb.movieReleaseDates({ id });
+        const us = data?.results?.find((r) => r.iso_3166_1 === 'US');
+        const cert = us?.release_dates
+          ?.map((rd) => rd.certification)
+          .find(Boolean);
+        return cert || null;
+      } catch {
+        return null;
       }
     }
 
+    // --- US certification checks ---
+    async function movieMatchesUSCert(movieDb, id, allowed) {
+      try {
+        const data = await movieDb.movieReleaseDates({ id });
+        const us = data?.results?.find((r) => r.iso_3166_1 === 'US');
+        if (!us?.release_dates?.length) return false;
+        return us.release_dates.some(
+          (rd) => rd.certification && allowed.includes(rd.certification)
+        );
+      } catch {
+        return false;
+      }
+    }
+
+    async function tvMatchesUSCert(movieDb, id, allowed) {
+      try {
+        const data = await movieDb.tvContentRatings({ id });
+        const us = data?.results?.find((r) => r.iso_3166_1 === 'US');
+        return !!(us?.rating && allowed.includes(us.rating));
+      } catch {
+        return false;
+      }
+    }
+
+    // --- tiny concurrency limiter (no extra deps) ---
+    async function limitConcurrent(items, limit, worker) {
+      const results = new Array(items.length);
+      let i = 0,
+        active = 0;
+      return await new Promise((resolve) => {
+        const kick = () => {
+          while (active < limit && i < items.length) {
+            const idx = i++,
+              val = items[idx];
+            active++;
+            Promise.resolve(worker(val, idx))
+              .then((r) => {
+                results[idx] = r;
+              })
+              .catch(() => {
+                results[idx] = false;
+              })
+              .finally(() => {
+                active--;
+                i === items.length && active === 0 ? resolve(results) : kick();
+              });
+          }
+        };
+        kick();
+      });
+    }
+
+    // --- ladders (same idea you used) ---
+    const MOVIE_CERTS = {
+      G: ['G'],
+      PG: ['G', 'PG'],
+      'PG-13': ['G', 'PG', 'PG-13'],
+      R: ['G', 'PG', 'PG-13', 'R'],
+    };
+    const TV_CERTS = {
+      G: ['TV-G'],
+      PG: ['TV-G', 'TV-PG'],
+      'PG-13': ['TV-G', 'TV-PG', 'TV-14'],
+      R: ['TV-G', 'TV-PG', 'TV-14', 'TV-MA'],
+    };
+
+    // Apply US certification with limited concurrency
+    async function enforceMovieCertIfNeededOld(
+      movieDb,
+      items,
+      ageRating,
+      concurrency = 8
+    ) {
+      if (!ageRating) return items;
+      const allowed = MOVIE_CERTS[ageRating];
+      const verdicts = await limitConcurrent(items, concurrency, (el) =>
+        movieMatchesUSCert(movieDb, el.id, allowed)
+      );
+      return items.filter((_, i) => verdicts[i] === true);
+    }
+    // Apply US certification with limited concurrency and keep a certMap
+    async function enforceMovieCertIfNeeded(
+      movieDb,
+      items,
+      ageRating,
+      concurrency = 8
+    ) {
+      if (!ageRating) return { items, certMap: new Map() };
+      if (items.length === 0) return { items, certMap: new Map() };
+
+      const allowed = new Set(MOVIE_CERTS[ageRating]);
+      const certs = await limitConcurrent(items, concurrency, (el) =>
+        getUSMovieCert(movieDb, el.id)
+      );
+
+      const certMap = new Map();
+      const filtered = [];
+      items.forEach((el, i) => {
+        const c = certs[i];
+        if (c && allowed.has(c)) {
+          certMap.set(el.id, c);
+          filtered.push(el);
+        }
+      });
+      return { items: filtered, certMap };
+    }
+
+    async function enforceTvCertIfNeeded(
+      movieDb,
+      items,
+      ageRating,
+      concurrency = 8
+    ) {
+      if (!ageRating) return items;
+      const allowed = TV_CERTS[ageRating];
+      const verdicts = await limitConcurrent(items, concurrency, (el) =>
+        tvMatchesUSCert(movieDb, el.id, allowed)
+      );
+      return items.filter((_, i) => verdicts[i] === true);
+    }
+    console.log(type, parameters);
     if (type === 'movie') {
       try {
         const res = await movieDb.searchMovie(parameters);
         // console.log('res', res);
-        let items = (res?.results ?? [])
+        const items0 = (res?.results ?? [])
           .filter((r) => (config.includeAdult ? true : !r.adult))
           .filter((r) => (r.vote_count ?? 0) >= MIN_VOTES_MOVIES)
           .filter((r) => (r.popularity ?? 0) >= MIN_POP)
-          .filter((r) => withinYears(r.release_date, YEARS_WIN))
-          .sort(sorters[SORT_BY]);
-        items.forEach((el) =>
-          searchResults.push(parseMedia(el, 'movie', genreList))
+          .filter((r) => withinYears(r.release_date, YEARS_WIN));
+        // .sort(sorters[SORT_BY]);
+        // console.log('items0', items0);
+        const { items: items1, certMap } = await enforceMovieCertIfNeeded(
+          movieDb,
+          items0,
+          config.ageRating,
+          8
         );
-        // console.log('searchResults', searchResults);
+        // console.log('items1', items1);
+        items1.sort(sorters[SORT_BY]); // sorter = sorters[SORT_BY] ?? sorters.popularity
+        items1.forEach((el) => {
+          const meta = parseMedia(el, 'movie', genreList);
+
+          const year = el.release_date ? el.release_date.slice(0, 4) : '';
+          const cert = certMap.get(el.id) || ''; // may be undefined if no age filter was set
+
+          // If parseMedia already puts plain title in meta.name:
+          meta.name = `${meta.name}${year ? ` (${year})` : ''}${cert ? ` – ${cert}` : ''}`;
+
+          searchResults.push(meta);
+        });
+        // console.log('searchResults Movies', searchResults);
       } catch (e) {
         console.error(e);
       }
-      // if (searchResults.length === 0) {
-      //   await moviedb
-      //     .searchMovie({
-      //       query: searchQuery,
-      //       language,
-      //       include_adult: config.includeAdult,
-      //     })
-      //     .then((res) => {
-      //       res.results.map((el) => {
-      //         searchResults.push(parseMedia(el, 'movie', genreList));
-      //       });
-      //     })
-      //     .catch(console.error);
-      // }
 
       await movieDb
         .searchPerson({ query: query, language })
@@ -229,44 +330,54 @@ async function getSearch(id, type, language, query, config) {
           const merged = [...(credits.cast ?? []), ...crewDW];
 
           // Base filtering (cheap local checks first)
-          let items = merged
+          let items0 = merged
             .filter((el) => (config.includeAdult ? true : !el.adult))
             .filter((el) => (el.vote_count ?? 0) >= MIN_VOTES_MOVIES)
             .filter((el) => (el.popularity ?? 0) >= MIN_POP)
             .filter((el) => withinYears(el.release_date, YEARS_WIN));
+          const { items: items1, certMap } = await enforceMovieCertIfNeeded(
+            movieDb,
+            items0,
+            config.ageRating,
+            8
+          );
+
           // Sort (popularity desc/asc)
-          items.sort((a, b) =>
+          items1.sort((a, b) =>
             SORT_DIR === 'desc'
               ? (b.popularity ?? 0) - (a.popularity ?? 0)
               : (a.popularity ?? 0) - (b.popularity ?? 0)
           );
 
-          // console.log('items', items);
           // De-dupe vs already added metas and within this list
           const seen = new Set(searchResults.map((m) => m.id));
           const local = new Set();
 
-          for (const el of items) {
+          for (const el of items1) {
             const id = `tmdb:${el.id}`;
             if (seen.has(id) || local.has(id)) continue;
-            searchResults.push(parseMedia(el, 'movie', genreList));
+            const meta = parseMedia(el, 'movie', genreList);
+
+            const year = el.release_date ? el.release_date.slice(0, 4) : '';
+            const cert = certMap.get(el.id) || ''; // may be undefined if no age filter was set
+
+            // If parseMedia already puts plain title in meta.name:
+            meta.name = `${meta.name}${year ? ` (${year})` : ''}${cert ? ` – ${cert}` : ''}`;
+            searchResults.push(meta);
             local.add(id);
             if (searchResults.length >= 50) break; // safety cap
           }
+          // console.log('searchResults Movies Persons', searchResults);
         })
         .catch(console.error);
-    } else {
+    } else if (type === 'series') {
       await movieDb
         .searchTv(parameters)
         .then(async (res) => {
-          console.log('res', res);
-          const filtered = await filterSortTvItems(
-            movieDb,
-            res.results,
-            config
-          );
+          // console.log('res', res);
+          const filtered = await filterSortTvItems(movieDb, res.results);
           pushTvParsed(filtered, searchResults, genreList);
-          console.log('searchResults', searchResults);
+          // console.log('searchResults', searchResults);
         })
         .catch(console.error);
 
@@ -296,18 +407,25 @@ async function getSearch(id, type, language, query, config) {
           );
 
           const merged = [...castUseful, ...crewDW];
-          console.log('merged', merged);
+          // console.log('merged', merged);
 
           const filtered = await filterSortTvItems(movieDb, merged);
           pushTvParsed(filtered, searchResults, genreList);
 
-          console.log('searchResults TV', searchResults);
+          // console.log('searchResults TV', searchResults);
         })
         .catch(console.error);
     }
   }
-  // console.log('searchResults', searchResults);
-  return Promise.resolve({ query, metas: searchResults });
+  const unique = [];
+  const seen = new Set();
+  for (const m of searchResults) {
+    if (!seen.has(m.id)) {
+      seen.add(m.id);
+      unique.push(m);
+    }
+  }
+  return Promise.resolve({ query, metas: unique });
 }
 
 export { getSearch };

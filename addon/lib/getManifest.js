@@ -164,7 +164,7 @@ async function createMDBListCatalog(userCatalog, mdblistKey) {
 }
 
 async function getManifest(config) {
-  console.log('getManifest', config);
+  // console.log('getManifest', config);
   const language = config.language || DEFAULT_LANGUAGE;
   const tmdbPrefix = config.tmdbPrefix === 'true';
   const provideImdbId = config.provideImdbId === 'true';
@@ -237,7 +237,12 @@ async function getManifest(config) {
       name: `${tmdbPrefix ? 'TMDB - ' : ''}${translatedCatalogs.search}`,
       extra: [{ name: 'search', isRequired: true, options: [] }],
     };
-
+    const searchCatalogMovieKeyWords = {
+      id: 'tmdb.search',
+      type: 'other',
+      name: `${tmdbPrefix ? 'TMDB - ' : ''}${translatedCatalogs.search}`,
+      extra: [{ name: 'search', isRequired: true, options: [] }],
+    };
     const searchCatalogSeries = {
       id: 'tmdb.search',
       type: 'series',
@@ -245,7 +250,12 @@ async function getManifest(config) {
       extra: [{ name: 'search', isRequired: true, options: [] }],
     };
 
-    catalogs = [...catalogs, searchCatalogMovie, searchCatalogSeries];
+    catalogs = [
+      ...catalogs,
+      searchCatalogMovie,
+      searchCatalogSeries,
+      searchCatalogMovieKeyWords,
+    ];
   }
 
   if (config.geminikey) {
@@ -287,7 +297,7 @@ async function getManifest(config) {
       'Stremio addon that provides rich metadata for movies and TV shows from TMDB, featuring customizable catalogs, multi-language support, favorites lists, watchlist, ratings, and IMDb integration. Current settings: ' +
       activeConfigs,
     resources: ['catalog', 'meta'],
-    types: ['movie', 'series'],
+    types: ['movie', 'series', 'other'],
     idPrefixes: provideImdbId ? ['tmdb:', 'tt'] : ['tmdb:'],
     stremioAddonsConfig,
     behaviorHints: {

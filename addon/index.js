@@ -1,4 +1,5 @@
 import path from 'path';
+import util from 'util';
 // addon/server.js
 import express from 'express';
 import favicon from 'serve-favicon';
@@ -87,11 +88,11 @@ addon.get('/:catalogChoices?/configure', function (req, res) {
 });
 
 addon.get('/:catalogChoices?/manifest.json', async function (req, res) {
-  console.log('manifest.json', req.params);
+  // console.log('manifest.json', req.params);
   const { catalogChoices } = req.params;
   const config = parseConfig(catalogChoices) || {};
   const manifest = await getManifest(config);
-
+  console.log(util.inspect(manifest, { depth: null, colors: true }));
   const cacheOpts = {
     cacheMaxAge: 12 * 60 * 60,
     staleRevalidate: 14 * 24 * 60 * 60,
@@ -117,11 +118,12 @@ addon.get(
       : {};
     const page = Math.ceil(skip ? skip / 20 + 1 : undefined) || 1;
     let metas = [];
+
     try {
       const args = [type, language, page];
-
+      console.log(id, genre, skip, search, args);
       if (search) {
-        console.log(id, type, language, search, config);
+        // console.log(id, type, language, search, config);
         metas = await getSearch(id, type, language, search, config);
       } else {
         switch (id) {

@@ -65,6 +65,8 @@ addon.get('/', function (_, res) {
   res.redirect('/configure');
 });
 
+addon.get('/health', (_, res) => res.json({ ok: true }));
+
 addon.get('/request_token', async function (req, res) {
   const requestToken = await getRequestToken();
   respond(res, requestToken);

@@ -290,6 +290,7 @@ async function getSearch(id, type, language, query, config) {
       concurrency = 8
     ) {
       if (!ageRating) return { items, certMap: new Map() };
+      if (items.length === 0) return { items, certMap: new Map() };
       const allowed = new Set(TV_CERTS[ageRating]);
 
       // limitConcurrent is your existing small concurrency helper
@@ -414,6 +415,7 @@ async function getSearch(id, type, language, query, config) {
         .then(async (res) => {
           // console.log('res', res);
           const filtered = await filterSortTvItems(movieDb, res.results);
+
           // Enforce certs (and capture rating strings)
           const { items: items1, certMap } = await enforceTvCertIfNeeded(
             movieDb,
@@ -421,6 +423,7 @@ async function getSearch(id, type, language, query, config) {
             config.ageRating,
             8
           );
+          // console.log(items1, certMap);
           // sort (use your existing sorter fallback)
           items1.sort(sorters[SORT_BY]);
           // push with title decoration: "Name (YYYY) – TV-14"
@@ -448,6 +451,7 @@ async function getSearch(id, type, language, query, config) {
             .slice()
             .sort((a, b) => (b.popularity ?? 0) - (a.popularity ?? 0))[0];
           if (!best) return;
+          // console.log('best', best);
 
           const credits = await movieDb.personTvCredits({
             id: best.id,
@@ -466,6 +470,7 @@ async function getSearch(id, type, language, query, config) {
           // console.log('merged', merged);
 
           const filtered = await filterSortTvItems(movieDb, merged);
+          // console.log('filtered', filtered);
           // Enforce certs (and capture rating strings)
           const { items: items1, certMap } = await enforceTvCertIfNeeded(
             movieDb,
@@ -497,6 +502,7 @@ async function getSearch(id, type, language, query, config) {
       unique.push(m);
     }
   }
+  console.log(`Search ${type} result length: ${unique.length}`);
   return Promise.resolve({ query, metas: unique });
 }
 

@@ -164,6 +164,17 @@ async function getSearch(id, type, language, query, config) {
       }
     }
 
+    // Return US TV certification (e.g., "TV-14") or null
+    async function getUSTvCert(movieDb, id) {
+      try {
+        const data = await movieDb.tvContentRatings({ id });
+        const us = data?.results?.find((r) => r.iso_3166_1 === 'US');
+        return us?.rating || null;
+      } catch {
+        return null;
+      }
+    }
+
     async function tvMatchesUSCert(movieDb, id, allowed) {
       try {
         const data = await movieDb.tvContentRatings({ id });
@@ -257,7 +268,7 @@ async function getSearch(id, type, language, query, config) {
       return { items: filtered, certMap };
     }
 
-    async function enforceTvCertIfNeeded(
+    async function enforceTvCertIfNeededOld(
       movieDb,
       items,
       ageRating,
@@ -269,6 +280,33 @@ async function getSearch(id, type, language, query, config) {
         tvMatchesUSCert(movieDb, el.id, allowed)
       );
       return items.filter((_, i) => verdicts[i] === true);
+    }
+
+    // Apply US certification with limited concurrency AND keep a certMap
+    async function enforceTvCertIfNeeded(
+      movieDb,
+      items,
+      ageRating,
+      concurrency = 8
+    ) {
+      if (!ageRating) return { items, certMap: new Map() };
+      const allowed = new Set(TV_CERTS[ageRating]);
+
+      // limitConcurrent is your existing small concurrency helper
+      const certs = await limitConcurrent(items, concurrency, (el) =>
+        getUSTvCert(movieDb, el.id)
+      );
+
+      const certMap = new Map();
+      const filtered = [];
+      items.forEach((el, i) => {
+        const c = certs[i];
+        if (c && allowed.has(c)) {
+          certMap.set(el.id, c);
+          filtered.push(el);
+        }
+      });
+      return { items: filtered, certMap };
     }
     console.log(type, parameters);
     if (type === 'movie') {
@@ -376,7 +414,25 @@ async function getSearch(id, type, language, query, config) {
         .then(async (res) => {
           // console.log('res', res);
           const filtered = await filterSortTvItems(movieDb, res.results);
-          pushTvParsed(filtered, searchResults, genreList);
+          // Enforce certs (and capture rating strings)
+          const { items: items1, certMap } = await enforceTvCertIfNeeded(
+            movieDb,
+            filtered,
+            config.ageRating,
+            8
+          );
+          // sort (use your existing sorter fallback)
+          items1.sort(sorters[SORT_BY]);
+          // push with title decoration: "Name (YYYY) – TV-14"
+          items1.forEach((el) => {
+            const meta = parseMedia(el, 'tv', genreList);
+            const year = el.first_air_date ? el.first_air_date.slice(0, 4) : '';
+            const cert = certMap.get(el.id) || '';
+            meta.name = `${meta.name}${year ? ` (${year})` : ''}${cert ? ` – ${cert}` : ''}`;
+            searchResults.push(meta);
+          });
+
+          //pushTvParsed(filtered, searchResults, genreList);
           // console.log('searchResults', searchResults);
         })
         .catch(console.error);
@@ -410,7 +466,23 @@ async function getSearch(id, type, language, query, config) {
           // console.log('merged', merged);
 
           const filtered = await filterSortTvItems(movieDb, merged);
-          pushTvParsed(filtered, searchResults, genreList);
+          // Enforce certs (and capture rating strings)
+          const { items: items1, certMap } = await enforceTvCertIfNeeded(
+            movieDb,
+            filtered,
+            config.ageRating,
+            8
+          );
+          // sort (use your existing sorter fallback)
+          items1.sort(sorters[SORT_BY]);
+          // push with title decoration: "Name (YYYY) – TV-14"
+          items1.forEach((el) => {
+            const meta = parseMedia(el, 'tv', genreList);
+            const year = el.first_air_date ? el.first_air_date.slice(0, 4) : '';
+            const cert = certMap.get(el.id) || '';
+            meta.name = `${meta.name}${year ? ` (${year})` : ''}${cert ? ` – ${cert}` : ''}`;
+            searchResults.push(meta);
+          });
 
           // console.log('searchResults TV', searchResults);
         })

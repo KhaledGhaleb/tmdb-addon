@@ -7,6 +7,8 @@ import { getGenresFromMDBList } from '../utils/mdbList.js';
 import 'dotenv/config'; // same as require("dotenv").config();
 
 export const DEFAULT_LANGUAGE = 'en-US';
+const HOST_NAME =
+  process.env.HOST_NAME || `http://localhost:${process.env.PORT || 1337}`;
 
 // __dirname shim for ESM
 const __filename = fileURLToPath(import.meta.url);
@@ -289,9 +291,9 @@ async function getManifest(config) {
   return {
     id: packageJson.name,
     version: packageJson.version,
-    favicon: `${process.env.HOST_NAME}/favicon.png`,
-    logo: `${process.env.HOST_NAME}/logo.png`,
-    background: `${process.env.HOST_NAME}/background.png`,
+    favicon: `${HOST_NAME}/favicon.png`,
+    logo: `${HOST_NAME}/logo.png`,
+    background: `${HOST_NAME}/background.png`,
     name: 'The Movie Database Addon',
     description:
       'Stremio addon that provides rich metadata for movies and TV shows from TMDB, featuring customizable catalogs, multi-language support, favorites lists, watchlist, ratings, and IMDb integration. Current settings: ' +
